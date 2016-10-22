@@ -32,15 +32,21 @@ class DexManager
   def help_message
     <<~EOF
     Usage:
+      -v                                Current version
+      -h                                Help
+      
       add first last type num           Adds new contact
-      add -n first last                 Adds name only
-      add -t index type num             Adds number to contact
+      add -n first last                 Adds new name only
+      add -t index type num             Adds contact number
       delete index                      Deletes contact
-      delete -t index num_index         Deletes number from contact
-      edit -n index new_first new_last  Edits name of contact
-      edit -t index num_index type num  Edits number of contact
-      find -n <param>                   Searches contacts by name (DEFAULT)
-      find -t <param>                   Searches contacts by number
+      delete -t index num_index         Deletes contact number
+      delete -e index email_index       Deletes contact email
+      edit -n index first last          Edits contact name
+      edit -t index num_index type num  Edits contact number
+      edit -e index email_index email   Edits contact email
+      find -n <param>                   Searches by name (DEFAULT)
+      find -t <param>                   Searches by number
+      find -e <param>                   Searches by email
     EOF
   end
 
