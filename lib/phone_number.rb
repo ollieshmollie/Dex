@@ -30,14 +30,7 @@ class PhoneNumber
   end
 
   def <=>(another_number)
-    case
-    when self.type > another_number.type
-      return 1
-    when self.type < another_number.type
-      return -1
-    else
-      return 0
-    end
+    type <=> another_number.type
   end
 
   def to_hash

@@ -13,14 +13,7 @@ class Contact
   end
 
   def <=>(another_contact)
-    case
-    when self.first_name > another_contact.first_name
-      return 1
-    when self.first_name < another_contact.first_name
-      return -1
-    else
-      return 0
-    end
+    first_name <=> another_contact.first_name
   end
 
   def self.from_hash(hash)
