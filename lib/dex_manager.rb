@@ -14,6 +14,9 @@ class DexManager
       opt.on('-t', '--phone', 'Edit phone number') do
         @options[:number] = true
       end
+      opt.on('-e', '--email', 'Edit email') do
+        @options[:email] = true
+      end
       opt.on("-v", "--version", "Version") do 
         @options[:version] = true
       end
@@ -43,11 +46,13 @@ class DexManager
 
   def run
     if !args_are_valid?
-      puts "command not found"
+      puts "Invalid input"
       puts help_message
       exit
     end
+
     case @command
+
     when "find"
       if @options.empty? || @options[:name]
         param = @args[0]
@@ -55,7 +60,11 @@ class DexManager
       elsif @options[:number]
         param = @args[0]
         puts @dex.find_by_number(param)
+      elsif @options[:email]
+        param = @args[0]
+        puts @dex.find_by_email(param)
       end
+
     when "add"
       if @options.empty?
         first_name = @args[0].downcase
@@ -78,42 +87,110 @@ class DexManager
         index = @args[0].to_i
         type = @args[1].downcase
         number = @args[2]
-        contact = @dex.contacts[index]
-        contact.add_phone_number(type, number)
-        @dex.save
-        puts contact
+        contact = @dex.contact_at_index(index)
+        if contact
+          contact.add_phone_number(type, number)
+          @dex.save
+          puts contact
+        else
+          puts "Contact index out of range".red
+        end
+      elsif @options[:email]
+        index = @args[0].to_i
+        address = @args[1]
+        contact = @dex.contact_at_index(index)
+        if contact
+          contact.add_email(address)
+          @dex.save
+          puts contact
+        else
+          puts "Contact index out of range".red
+        end
       end
+
     when "delete"
-      if @options[:number]
-        contact_index = @args[0].to_i
-        number_index = @args[1].to_i
-        contact = @dex.contacts[contact_index]
-        contact.delete_phone_number(number_index)
-        @dex.save
-        puts contact
-      else
+      if @options.empty?
         index = @args[0].to_i
         contact = @dex.delete(index)
         puts contact if contact
-        puts "Can't find a contact at index #{index}".red if !contact
+        puts "Index out of range".red if !contact
+      elsif @options[:number]
+        contact_index = @args[0].to_i
+        number_index = @args[1].to_i
+        contact = @dex.contact_at_index(contact_index)
+        if contact
+          if contact.delete_phone_number(number_index)
+            @dex.save
+            puts contact
+          else
+            puts "Phone number index out of range".red
+          end
+        else
+          puts "Contact index out of range".red
+        end
+      elsif @options[:email]
+        contact_index = @args[0].to_i
+        email_index = @args[1].to_i
+        contact = @dex.contact_at_index(contact_index)
+        if contact
+          if contact.delete_email(email_index)
+            @dex.save
+            puts contact
+          else
+            puts "Email index out of range".red
+          end
+        else
+          puts "Contact index out of range".red
+        end
       end
+
     when "edit"
       if @options[:name]
         index = @args[0].to_i
         first_name = @args[1].downcase
         last_name = @args[2].downcase
-        contact = @dex.update_name(index, first_name, last_name)
-        puts contact if contact
-        puts "Can't find a contact at index #{index}".red if !contact
+        contact = @dex.contact_at_index(index)
+        if contact
+          contact.first_name = first_name.capitalize
+          contact.last_name = last_name.capitalize
+          @dex.save
+          puts contact
+        else
+          puts "Contact index out of range".red
+        end
       elsif @options[:number]
         contact_index = @args[0].to_i
         number_index = @args[1].to_i
-        type = @args[2].downcase
-        number = @args[3]
-        contact = @dex.update_number(contact_index, number_index, type, number)
-        puts contact if contact
-        puts "Can't find a contact at index #{index}".red if !contact
+        new_type = @args[2].downcase
+        new_number = @args[3]
+        contact = @dex.contact_at_index(contact_index)
+        if contact
+          if contact.update_phone_number(number_index, new_type, new_number)
+            puts contact
+            @dex.save
+          else
+            puts "Number index out of range".red
+          end
+        else
+          puts "Contact index out of range".red
+        end
+      elsif @options[:email]
+        contact_index = @args[0].to_i
+        email_index = @args[1].to_i
+        new_address = @args[2]
+        contact = @dex.contact_at_index(contact_index)
+        if contact
+          if contact.update_email(email_index, new_address)
+            puts contact
+            @dex.save
+          else
+            puts "Email index out of range".red
+          end
+        else
+          puts "Contact index of out range".red
+        end
       end
+
     when nil
       if @options[:help]
         puts help_message
@@ -123,7 +200,9 @@ class DexManager
         puts "--No saved contacts".red if @dex.contacts.empty?
         puts @dex if !@dex.contacts.empty?
       end
+
     end
+
   end
 
   def args_are_valid?
@@ -131,27 +210,37 @@ class DexManager
     when "find"
       return false if @args.count != 1
       return false if @options.count > 1
+      return false if !@options.empty? && !@options[:name] && !@options[:number] && !@options[:email]
       return true
     when "add"
       return false if @options.empty? && @args.count != 4
       return false if @options.count > 1
+      return false if !@options.empty? && !@options[:name] && !@options[:number] && !@options[:email]
       return false if @options[:name] && @args.count != 2
       return false if @options[:number] && @args.count != 3
+      return false if @options[:email] && @args.count != 2
       return false if @options[:number] && @args[0].to_i == 0 && @args[0] != "0"
+      return false if @options[:email] && @args[0].to_i == 0 && @args[0] != "0"
       return true
     when "delete"
       return false if @options.count > 1
+      return false if !@options.empty? && !@options[:number] && !@options[:email]
       return false if @options.count == 0 && @args.count != 1
       return false if @args[0].to_i == 0 && @args[0] != "0"
+      return false if @options[:number] && @args.count != 2
       return false if @options[:number] && @args[1].to_i == 0 && @args[1] != "0"
-      return false if @options.count ==1 && !@options[:number]
+      return false if @options[:email] && @args.count != 2
+      return false if @options[:email] && @args[1].to_i == 0 && @args[1] != "0"
       return true
     when "edit"
       return false if @options.count != 1
+      return false if !@options[:name] && !@options[:number] && !@options[:email]
       return false if @options[:name] && @args.count != 3
       return false if @options[:number] && @args.count != 4
+      return false if @options[:email] && @args.count != 3
       return false if @args[0].to_i == 0 && @args[0] != "0"
       return false if @options[:number] && @args[1].to_i == 0 && @args[1] != "0"
+      return false if @options[:email] && @args[1].to_i == 0 && @args[1] != "0"
       return true
     when nil
       return false if @options.count > 1

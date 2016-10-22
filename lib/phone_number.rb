@@ -4,6 +4,11 @@ class PhoneNumber
 
   include Comparable
   attr_accessor :number, :index, :type
+
+  def <=>(another_number)
+    type <=> another_number.type
+  end
+  
   def initialize(type, number)
     @index = nil
     @type = type
@@ -27,10 +32,6 @@ class PhoneNumber
       return n
     end
     return chars.join
-  end
-
-  def <=>(another_number)
-    type <=> another_number.type
   end
 
   def to_hash

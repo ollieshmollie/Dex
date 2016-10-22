@@ -1,6 +1,24 @@
 [
   {
     "index": 0,
+    "first_name": "Andrew",
+    "last_name": "Bond",
+    "phone_numbers": [
+      {
+        "index": 0,
+        "type": "Cell",
+        "number": "212-335-0932"
+      }
+    ],
+    "emails": [
+      {
+        "index": 0,
+        "address": "oliverduncan@icloud.com"
+      }
+    ]
+  },
+  {
+    "index": 1,
     "first_name": "Angela",
     "last_name": "Shaul",
     "phone_numbers": [
@@ -9,10 +27,16 @@
         "type": "Cell",
         "number": "512-970-4026"
       }
+    ],
+    "emails": [
+      {
+        "index": 0,
+        "address": "angi_s@ymail.com"
+      }
     ]
   },
   {
-    "index": 1,
+    "index": 2,
     "first_name": "Brendan",
     "last_name": "Bond",
     "phone_numbers": [
@@ -21,10 +45,16 @@
         "type": "Cell",
         "number": "512-762-2286"
       }
+    ],
+    "emails": [
+      {
+        "index": 0,
+        "address": "brendanbond@gmail.com"
+      }
     ]
   },
   {
-    "index": 2,
+    "index": 3,
     "first_name": "Dillon",
     "last_name": "Devito",
     "phone_numbers": [
@@ -33,10 +63,13 @@
         "type": "Cell",
         "number": "917-474-1096"
       }
+    ],
+    "emails": [
+
     ]
   },
   {
-    "index": 3,
+    "index": 4,
     "first_name": "Ilene",
     "last_name": "Mcgarrigle",
     "phone_numbers": [
@@ -50,22 +83,31 @@
         "type": "Home",
         "number": "512-458-6420"
       }
-    ]
-  },
-  {
-    "index": 4,
-    "first_name": "Oliver",
-    "last_name": "Bond",
-    "phone_numbers": [
+    ],
+    "emails": [
       {
         "index": 0,
-        "type": "Cell",
-        "number": "512-791-2733"
+        "address": "imcgarrigle@austin.rr.com"
       }
     ]
   },
   {
     "index": 5,
+    "first_name": "Oliver",
+    "last_name": "Bond",
+    "phone_numbers": [
+      {
+        "index": 0,
+        "type": "cell",
+        "number": "748-087-3874"
+      }
+    ],
+    "emails": [
+
+    ]
+  },
+  {
+    "index": 6,
     "first_name": "Patrick",
     "last_name": "Mcgarrigle",
     "phone_numbers": [
@@ -74,6 +116,9 @@
         "type": "Cell",
         "number": "512-731-5852"
       }
+    ],
+    "emails": [
+
     ]
   }
 ]
