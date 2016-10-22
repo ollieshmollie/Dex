@@ -9,8 +9,8 @@ class Dex
   end
 
   def load
-    if File.exists?("./contacts.json")
-      file = File.open("./contacts.json").read
+    if File.exists?("/Users/ollieshmollie/Projects/Ruby/Dex/contacts.json")
+      file = File.open("/Users/ollieshmollie/Projects/Ruby/Dex/contacts.json").read
       dex = JSON.parse(file)
       loadedContacts = []
       dex.each do |hash|
@@ -18,6 +18,18 @@ class Dex
         loadedContacts.push(contact)
       end
       return loadedContacts
+    end
+  end
+
+  def save
+    dex = []
+    contacts.sort!
+    contacts.each_with_index do |contact, index| 
+      contact.index = index
+      dex.push(contact.to_hash)
+    end
+    File.open("/Users/ollieshmollie/Projects/Ruby/Dex/contacts.json", "w") do |file|
+      file.write(JSON.pretty_generate(dex))
     end
   end
 
@@ -62,18 +74,6 @@ class Dex
   def contact_at_index(index)
     if index >= 0 && index < contacts.count
       return contacts[index]
-    end
-  end
-
-  def save
-    dex = []
-    contacts.sort!
-    contacts.each_with_index do |contact, index| 
-      contact.index = index
-      dex.push(contact.to_hash)
-    end
-    File.open("./contacts.json", "w") do |file|
-      file.write(JSON.pretty_generate(dex))
     end
   end
 
