@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require_relative "../lib/dex_manager.rb"
+
+dexManager = DexManager.new(ARGV)
+dexManager.run
