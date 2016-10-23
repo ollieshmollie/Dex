@@ -5,7 +5,7 @@ class DexManager
   def initialize(args)
     @dex = Dex.new
     @options = {}
-    @version = "dex version 1.0"
+    @version = "dex version 1.1"
     @opt_parser = OptionParser.new do |opt|
       opt.banner = "Usage: dex [COMMAND] [OPTIONS] [ARGUMENTS]"
       opt.on('-n', '--name', 'Edit name') do
@@ -34,7 +34,7 @@ class DexManager
     Usage:
       -v                                Current version
       -h                                Help
-      
+
       add first last type num           Adds new contact
       add -n first last                 Adds new name only
       add -t index type num             Adds contact number
