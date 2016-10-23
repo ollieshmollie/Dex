@@ -33,8 +33,19 @@ class Dex
     end
   end
 
+  def find_by_first_name_letter(letter)
+    search_results = []
+    contacts.each {|contact| search_results.push(contact) if contact.first_name.start_with?(letter.upcase)}
+    return search_results.empty? ? "No search results found".red : search_results
+  end
+
+  def find_by_last_name_letter(letter)
+    search_results = []
+    contacts.each {|contact| search_results.push(contact) if contact.last_name.start_with?(letter.upcase)}
+    return search_results.empty? ? "No search results found".red : search_results
+  end
+
   def find_by_name(param)
-    param = param
     search_results = []
     contacts.each {|contact| search_results.push(contact) if contact.full_name.include?(param)}
     return search_results.empty? ? "No search results found".red : search_results

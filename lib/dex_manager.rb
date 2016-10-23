@@ -17,6 +17,12 @@ class DexManager
       opt.on('-e', '--email', 'Edit email') do
         @options[:email] = true
       end
+      opt.on('-f', '--first', 'By first name') do
+        @options[:first] = true
+      end
+      opt.on('-l', '--last', 'By last name') do
+        @options[:last] = true        
+      end
       opt.on("-v", "--version", "Version") do 
         @options[:version] = true
       end
@@ -48,6 +54,8 @@ class DexManager
       find -n <param>                   Searches by name (DEFAULT)
       find -t <param>                   Searches by number
       find -e <param>                   Searches by email
+      find -f <letter>                  Names by first name letter
+      find -l <letter>                  Names by last name letter
       EOF
   end
 
@@ -70,6 +78,12 @@ class DexManager
       elsif @options[:email]
         param = @args[0]
         puts @dex.find_by_email(param)
+      elsif @options[:first]
+        param = @args[0].downcase
+        puts @dex.find_by_first_name_letter(param)
+      elsif @options[:last]
+        param = @args[0].downcase
+        puts @dex.find_by_last_name_letter(param)
       end
 
     when "add"
@@ -217,7 +231,8 @@ class DexManager
     when "find"
       return false if @args.count != 1
       return false if @options.count > 1
-      return false if !@options.empty? && !@options[:name] && !@options[:number] && !@options[:email]
+      return false if !@options.empty? && !@options[:name] && !@options[:number] && !@options[:email] && !@options[:first] && !@options[:last]
+      return false if (@options[:first] || @options[:last]) && @args[0].length != 1
       return true
     when "add"
       return false if @options.empty? && @args.count != 4

@@ -18,3 +18,5 @@ Usage:
   find -n <param>                   Searches by name (DEFAULT)
   find -t <param>                   Searches by number
   find -e <param>                   Searches by email
+  find -f <letter>                  Names by first name letter
+  find -l <letter>                  Names by last name letter
