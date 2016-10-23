@@ -24,7 +24,7 @@ class Dex
   def save
     dex = []
     contacts.sort!
-    contacts.each_with_index do |contact, index| 
+    contacts.each_with_index do |contact, index|
       contact.index = index
       dex.push(contact.to_hash)
     end

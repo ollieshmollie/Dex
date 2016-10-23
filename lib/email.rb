@@ -22,7 +22,7 @@ class Email
   end
 
   def to_s
-    "[#{@index}] #{@address}"
+    "[#{@index}] <#{@address}>"
   end
 
 end

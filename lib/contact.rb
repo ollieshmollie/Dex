@@ -99,9 +99,11 @@ class Contact
   end
 
   def to_s
-    string = "[#{index}]".red + " #{full_name}\n".green.bold
+    string = "=" * 40 + "\n"
+    string += "[#{index}]".red + " #{full_name}\n".green.bold
     phone_numbers.each {|number| string += "\s\s" + number.to_s + "\n"}
-    emails.each {|address| string += "\s\s\s\s" + address.to_s + "\n"}
+    emails.each {|address| string += address.to_s + "\n"}
+    string += "=" * 40 + "\n"
     return string
   end
 
