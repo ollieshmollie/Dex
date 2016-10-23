@@ -1,5 +1,5 @@
 # Dex
-## A command line rolodex.
+## A command line rolodex, version 1.2
 
 Usage:
   -v                                Current version
