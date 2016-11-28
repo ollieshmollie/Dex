@@ -1,4 +1,4 @@
-# Dex
+# dex
 ## A command line rolodex, version 1.2
 
 Usage:
