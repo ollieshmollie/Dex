@@ -1,7 +1,7 @@
 class Email
-
   include Comparable
   attr_accessor :address, :index
+  
   def <=>(another_email)
     self.address <=> another_email.address
   end
@@ -24,5 +24,4 @@ class Email
   def to_s
     "[#{@index}] <#{@address}>"
   end
-
 end

@@ -272,5 +272,4 @@ class DexManager
       return false
     end
   end
-
 end

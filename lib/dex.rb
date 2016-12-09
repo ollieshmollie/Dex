@@ -2,8 +2,8 @@ require_relative "./contact.rb"
 require 'json'
 
 class Dex
-
   attr_reader :contacts
+  
   def initialize
     @contacts = load || []
   end
@@ -93,5 +93,4 @@ class Dex
     contacts.each {|contact| string += contact.to_s}
     return string
   end
-
 end

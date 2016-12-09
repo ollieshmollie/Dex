@@ -1,7 +1,6 @@
 require 'colored'
 
 class PhoneNumber
-
   include Comparable
   attr_accessor :number, :index, :type
 
@@ -47,5 +46,4 @@ class PhoneNumber
   def to_s
     "[#{index}]" + " #{type.yellow}: #{formatted_number(number).bold}"
   end
-
 end

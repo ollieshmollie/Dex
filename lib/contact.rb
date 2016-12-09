@@ -3,7 +3,6 @@ require_relative "./email.rb"
 require 'colored'
 
 class Contact
-
   include Comparable
   attr_accessor :index, :first_name, :last_name, :phone_numbers, :emails
 
@@ -106,5 +105,4 @@ class Contact
     string += "=" * 40 + "\n"
     return string
   end
-
 end
