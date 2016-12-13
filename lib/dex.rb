@@ -75,8 +75,6 @@ class Dex
     first_name = first_name.downcase.capitalize
     last_name = last_name.downcase.capitalize
     return false if @db.execute("select * from contacts where first_name = '#{first_name}' and last_name = '#{last_name}';").length > 0
-    first_name.capitalize!
-    last_name.capitalize!
     @db.execute("insert into contacts (first_name, last_name)"\
                 "values ('#{first_name}', '#{last_name}');")
     true
