@@ -39,7 +39,7 @@ class PhoneNumber
 
   def self.from_hash(hash)
     number = self.new(hash["type"], hash["number"])
-    number.index = hash["index"]
+    # number.index = hash["index"]
     return number
   end
 

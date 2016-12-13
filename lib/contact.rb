@@ -20,17 +20,17 @@ class Contact
 
   def self.from_hash(hash)
     contact = self.new(hash["first_name"], hash["last_name"])
-    contact.index = hash["index"]
-    phone_numbers = hash["phone_numbers"]
-    phone_numbers.each do |hash| 
-      number = PhoneNumber.from_hash(hash)
-      contact.phone_numbers.push(number)
-    end
-    emails = hash["emails"]
-    emails.each do |hash|
-      email = Email.from_hash(hash)
-      contact.emails.push(email)
-    end
+    # contact.index = hash["index"]
+    # phone_numbers = hash["phone_numbers"]
+    # phone_numbers.each do |hash| 
+    #   number = PhoneNumber.from_hash(hash)
+    #   contact.phone_numbers.push(number)
+    # end
+    # emails = hash["emails"]
+    # emails.each do |hash|
+    #   email = Email.from_hash(hash)
+    #   contact.emails.push(email)
+    # end
     return contact
   end
 
