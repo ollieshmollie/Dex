@@ -1,7 +1,7 @@
 require_relative "./dex.rb"
 require 'optparse'
 
-class DexManager
+class DexController
   def initialize(args)
     @dex = Dex.new
     @options = {}
