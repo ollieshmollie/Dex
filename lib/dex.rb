@@ -5,7 +5,8 @@ class Dex
   attr_reader :contacts
   
   def initialize
-    @db = SQLite3::Database.new('dex.sqlite3')
+    @db = SQLite3::Database.new("/Users/ollieshmollie/Projects/Ruby/dex/dex.sqlite3")
+    @db.results_as_hash = true
     @db.execute("pragma foreign_keys = on")
     create_tables
     @contacts = load
@@ -45,7 +46,6 @@ class Dex
   def load
     contacts = []
     contact_index = 0
-    @db.results_as_hash = true
     @db.execute("select * from contacts order by last_name asc;") do |contact_hash|
       contact = Contact.from_hash(contact_hash)
       contact.index = contact_index
@@ -74,106 +74,111 @@ class Dex
   def add_contact(first_name, last_name)
     first_name = first_name.downcase.capitalize
     last_name = last_name.downcase.capitalize
-    return false if @db.execute("select * from contacts where first_name = '#{first_name}' and last_name = '#{last_name}';").length > 0
-    @db.execute("insert into contacts (first_name, last_name)"\
+    begin
+      @db.execute("insert into contacts (first_name, last_name)"\
                 "values ('#{first_name}', '#{last_name}');")
-    true
+    rescue
+      puts "Contact already exists".red
+    end
   end
 
   def add_phone_number(contact_index, type, number)
     type = type.downcase.capitalize
     contact_id = contact_id(contact_index)
-    return true if @db.execute("insert into phone_numbers (type, number, contact_id) values ('#{type}', '#{number}', #{contact_id});")
-    false
+    @db.execute("insert into phone_numbers (type, number, contact_id) values ('#{type}', '#{number}', #{contact_id});")
   end
 
   def add_email(contact_index, address)
     contact_id = contact_id(contact_index)
-    return true if @db.execute("insert into emails (address, contact_id) values ('#{address}', #{contact_id});")
-    false
+    @db.execute("insert into emails (address, contact_id) values ('#{address}', #{contact_id});")
   end
 
   def delete_contact(contact_index)
     contact_id = contact_id(contact_index)
-    return true if @db.execute("delete from contacts where id = #{contact_id};")
-    false
+    @db.execute("delete from contacts where id = #{contact_id};")
   end
 
   def delete_phone_number(contact_index, phone_number_index)
-    contact_id = contact_id(contact_index)
     phone_numbers = @db.execute("select * from phone_numbers where contact_id = #{contact_id}")
     phone_number_id = phone_numbers[phone_number_index]["id"]
-    return true if @db.execute("delete from phone_numbers where id = #{phone_number_id};")
-    false
+    @db.execute("delete from phone_numbers where id = #{phone_number_id};")
   end
 
   def delete_email(contact_index, email_index)
     contact_id = contact_id(contact_index)
     emails = @db.execute("select * from emails where contact_id = #{contact_id};")
     email_id = emails[email_index]["id"]
-    return true if @db.execute("delete from emails where id = #{email_id};")
-    false
+    @db.execute("delete from emails where id = #{email_id};")
+  end
+
+  def edit_contact_name(contact_index, new_first_name, new_last_name)
+    contact_id = contact_id(contact_index)  
+    begin
+      @db.execute("update contacts "\
+                  "set first_name = '#{new_first_name}', "\
+                  "last_name = '#{new_last_name}' "\
+                  "where id = #{contact_id};")
+    rescue
+      puts "Contact already exists".red
+    end
+  end
+
+  def edit_phone_number(contact_index, new_type, new_number)
+    contact_id = contact_id(contact_index)
+    @db.execute("update phone_numbers "\
+                "set type = '#{new_type}', "\
+                "number = '#{new_number}' "\
+                "where contact_id = #{contact_id};")
+  end
+
+  def edit_email(contact_index, new_address)
+    contact_id = contact_id(contact_index)
+    @db.execute("update emails "\
+                "address = '#{new_address}' "\
+                "where contact_id = #{contact_id};")
   end
 
   def contact_id(contact_index)
-    contact = @contacts[contact_index]
-    id_arr = @db.execute("select id from contacts where first_name = '#{contact.first_name}' and last_name = '#{contact.last_name}';")
-    id_arr[0]["id"]
-  end
-
-  def find_by_first_name_letter(letter)
-    search_results = []
-    contacts.each {|contact| search_results.push(contact) if contact.first_name.start_with?(letter.upcase)}
-    return search_results.empty? ? "No search results found".red : search_results
+    begin
+      contact = @contacts[contact_index]
+      id_arr = @db.execute("select id from contacts where first_name = '#{contact.first_name}' and last_name = '#{contact.last_name}';")
+      id_arr[0]["id"]
+    rescue
+      puts "Error: Index out of range".red
+      exit
+    end
   end
 
   def find_by_last_name_letter(letter)
+    letter.upcase!
     search_results = []
     contacts.each {|contact| search_results.push(contact) if contact.last_name.start_with?(letter.upcase)}
-    return search_results.empty? ? "No search results found".red : search_results
+    search_results
   end
 
   def find_by_name(param)
+    param = param.downcase.capitalize
     search_results = []
     contacts.each {|contact| search_results.push(contact) if contact.full_name.include?(param)}
-    return search_results.empty? ? "No search results found".red : search_results
+    search_results
   end
 
   def find_by_number(param)
+    param = param.downcase.capitalize
     search_results = []
     contacts.each do |contact|
       contact.phone_numbers.each {|number| search_results.push(contact) if number.number.include?(param)}
     end
-    return search_results.empty? ? "No search results found".red : search_results
+    search_results
   end
 
   def find_by_email(param)
+    param = param.downcase.capitalize
     search_results = []
     contacts.each do |contact|
       contact.emails.each {|email| search_results.push(contact) if email.address.include?(param)}
     end
-    return search_results.empty? ? "No search results found".red : search_results
-  end
-
-  def add(contact)
-    contacts.push(contact)
-    save
-    return contact
-  end
-
-  def delete(contact_index)
-    if contact_index >= 0 && contact_index < contacts.count
-      contact = contacts[contact_index]
-      contacts.delete_at(contact_index)
-      save
-      return contact
-    end
-  end
-
-  def contact_at_index(index)
-    if index >= 0 && index < contacts.count
-      return contacts[index]
-    end
+    search_results
   end
 
   def to_s

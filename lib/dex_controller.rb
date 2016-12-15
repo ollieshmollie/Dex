@@ -41,8 +41,7 @@ class DexController
       -v                                Current version
       -h                                Help
 
-      add first last type num           Adds new contact
-      add -n first last                 Adds new name
+      add first last                    Adds new name
       add -t index type num             Adds contact number
       add -e index address              Adds contact email
       delete index                      Deletes contact
@@ -51,7 +50,7 @@ class DexController
       edit -n index first last          Edits contact name
       edit -t index num_index type num  Edits contact number
       edit -e index e_index address     Edits contact email
-      find -n <param>                   Searches by name (DEFAULT)
+      find <param>                      Searches by name (DEFAULT)
       find -t <param>                   Searches by number
       find -e <param>                   Searches by email
       find -f <letter>                  Names by first name letter
@@ -79,147 +78,69 @@ class DexController
         param = @args[0]
         puts @dex.find_by_email(param)
       elsif @options[:first]
-        param = @args[0].downcase
+        param = @args[0]
         puts @dex.find_by_first_name_letter(param)
       elsif @options[:last]
-        param = @args[0].downcase
+        param = @args[0]
         puts @dex.find_by_last_name_letter(param)
       end
 
     when "add"
-      if @options.empty?
-        first_name = @args[0].downcase
-        last_name = @args[1].downcase
-        type = @args[2].downcase
-        number = @args[3]
-        contact = Contact.new(first_name, last_name)
-        contact.add_phone_number(type, number)
-        @dex.add(contact)
-        @dex.save
-        puts contact
-      elsif @options[:name]
-        first_name = @args[0].downcase
-        last_name = @args[1].downcase
-        contact = Contact.new(first_name, last_name)
-        @dex.add(contact)
-        @dex.save
-        puts contact
+      if @options[:name]
+        first_name = @args[0]
+        last_name = @args[1]
+        @dex.add_contact(first_name, last_name) ? nil : "fatal: contact already exists".red
       elsif @options[:number]
-        index = @args[0].to_i
-        type = @args[1].downcase
+        contact_index = @args[0].to_i
+        type = @args[1]
         number = @args[2]
-        contact = @dex.contact_at_index(index)
-        if contact
-          contact.add_phone_number(type, number)
-          @dex.save
-          puts contact
-        else
-          puts "Contact index out of range".red
-        end
+        @dex.add_phone_number(contact_index, type, number)
       elsif @options[:email]
-        index = @args[0].to_i
+        contact_index = @args[0].to_i
         address = @args[1]
-        contact = @dex.contact_at_index(index)
-        if contact
-          contact.add_email(address)
-          @dex.save
-          puts contact
-        else
-          puts "Contact index out of range".red
-        end
+        @dex.add_email(contact_index, address)
       end
 
     when "delete"
       if @options.empty?
-        index = @args[0].to_i
-        contact = @dex.delete(index)
-        puts contact if contact
-        puts "Index out of range".red if !contact
+        contact_index = @args[0].to_i
+        @dex.delete_contact(contact_index)
       elsif @options[:number]
         contact_index = @args[0].to_i
         number_index = @args[1].to_i
-        contact = @dex.contact_at_index(contact_index)
-        if contact
-          if contact.delete_phone_number(number_index)
-            @dex.save
-            puts contact
-          else
-            puts "Phone number index out of range".red
-          end
-        else
-          puts "Contact index out of range".red
-        end
+        @dex.delete_phone_number(contact_index, number_index)
       elsif @options[:email]
         contact_index = @args[0].to_i
         email_index = @args[1].to_i
-        contact = @dex.contact_at_index(contact_index)
-        if contact
-          if contact.delete_email(email_index)
-            @dex.save
-            puts contact
-          else
-            puts "Email index out of range".red
-          end
-        else
-          puts "Contact index out of range".red
-        end
+        @dex.delete_email(contact_index, email_index)
       end
 
     when "edit"
       if @options[:name]
-        index = @args[0].to_i
-        first_name = @args[1].downcase
-        last_name = @args[2].downcase
-        contact = @dex.contact_at_index(index)
-        if contact
-          contact.first_name = first_name.capitalize
-          contact.last_name = last_name.capitalize
-          @dex.save
-          puts contact
-        else
-          puts "Contact index out of range".red
-        end
+        contact_index = @args[0].to_i
+        first_name = @args[1]
+        last_name = @args[2]
+        @dex.edit_contact_name(contact_index, first_name, last_name)
       elsif @options[:number]
         contact_index = @args[0].to_i
         number_index = @args[1].to_i
-        new_type = @args[2].downcase
+        new_type = @args[2]
         new_number = @args[3]
-        contact = @dex.contact_at_index(contact_index)
-        if contact
-          if contact.update_phone_number(number_index, new_type, new_number)
-            puts contact
-            @dex.save
-          else
-            puts "Number index out of range".red
-          end
-        else
-          puts "Contact index out of range".red
-        end
+        @dex.edit_phone_number(contact_index, number_index, new_type, new_number)
       elsif @options[:email]
         contact_index = @args[0].to_i
         email_index = @args[1].to_i
         new_address = @args[2]
-        contact = @dex.contact_at_index(contact_index)
-        if contact
-          if contact.update_email(email_index, new_address)
-            puts contact
-            @dex.save
-          else
-            puts "Email index out of range".red
-          end
-        else
-          puts "Contact index of out range".red
-        end
+        @dex.edit_email(contact_index, email_index, new_address)
       end
-
+      
     when nil
       if @options[:help]
         puts help_message
       elsif @options[:version]
         puts @version
       else
-        puts "--No saved contacts".red if @dex.contacts.empty?
-        puts @dex if !@dex.contacts.empty?
+        puts @dex
       end
 
     end
