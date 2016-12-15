@@ -17,10 +17,6 @@ class Email
     return address
   end
 
-  def to_hash
-    {index: @index, address: @address}
-  end
-
   def to_s
     "[#{@index}] <#{@address}>"
   end

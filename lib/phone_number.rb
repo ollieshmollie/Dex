@@ -39,10 +39,6 @@ class PhoneNumber
     @number = number
   end
 
-  def to_hash
-    {index: index, type: type, number: PhoneNumber.format_number(number)}
-  end
-
   def to_s
     "[#{index}]" + " #{type.yellow}: #{PhoneNumber.format_number(number).bold}"
   end
