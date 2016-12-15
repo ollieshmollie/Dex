@@ -44,9 +44,9 @@ class DexController
       add first last                    Adds new name
       add index -p type num             Adds contact number
       add index -e address              Adds contact email
-      rm index                      Deletes contact
-      rm index -p num_index         Deletes contact number
-      rm index -e e_index           Deletes contact email
+      rm index                          Deletes contact
+      rm index -p num_index             Deletes contact number
+      rm index -e e_index               Deletes contact email
       edit index first last             Edits contact name
       edit index -p num_index type num  Edits contact number
       edit index -e e_index address     Edits contact email
