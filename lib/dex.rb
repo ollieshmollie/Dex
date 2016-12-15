@@ -170,13 +170,6 @@ class Dex
     end
   end
 
-  def find_by_last_name_letter(letter)
-    letter.upcase!
-    search_results = []
-    contacts.each {|contact| search_results.push(contact) if contact.last_name.start_with?(letter.upcase)}
-    search_results
-  end
-
   def find_by_name(param)
     param = param.downcase.capitalize
     search_results = []
