@@ -86,10 +86,10 @@ class DexController
       end
 
     when "add"
-      if @options[:name]
+      if @options.empty?
         first_name = @args[0]
         last_name = @args[1]
-        @dex.add_contact(first_name, last_name) ? nil : "fatal: contact already exists".red
+        @dex.add_contact(first_name, last_name)
       elsif @options[:number]
         contact_index = @args[0].to_i
         type = @args[1]
