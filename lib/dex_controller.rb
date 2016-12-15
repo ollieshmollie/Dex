@@ -132,11 +132,7 @@ class DexController
       else
         puts @dex
       end
-
-    # else
-    #   puts "Invalid input"
-    #   puts help_message
-    #   exit
+      
     end
 
   end
