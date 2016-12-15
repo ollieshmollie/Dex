@@ -42,14 +42,14 @@ class DexController
       -h                                Help
 
       add first last                    Adds new name
-      add -p index type num             Adds contact number
-      add -e index address              Adds contact email
+      add index -p type num             Adds contact number
+      add index -e address              Adds contact email
       delete index                      Deletes contact
-      delete -p index num_index         Deletes contact number
-      delete -e index e_index           Deletes contact email
-      edit -n index first last          Edits contact name
-      edit -p index num_index type num  Edits contact number
-      edit -e index e_index address     Edits contact email
+      delete index -p num_index         Deletes contact number
+      delete index -e e_index           Deletes contact email
+      edit index first last             Edits contact name
+      edit index -p num_index type num  Edits contact number
+      edit index -e e_index address     Edits contact email
       find <param>                      Search
       EOF
   end
