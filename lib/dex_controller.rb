@@ -98,7 +98,7 @@ class DexController
       end
 
     when "edit"
-      if @options[:name]
+      if @options.empty?
         contact_index = @args[0].to_i
         first_name = @args[1]
         last_name = @args[2]
@@ -158,9 +158,9 @@ class DexController
       return false if @options[:email] && @args[1].to_i == 0 && @args[1] != "0"
       return true
     when "edit"
-      return false if @options.count != 1
-      return false if !@options[:name] && !@options[:number] && !@options[:email]
-      return false if @options[:name] && @args.count != 3
+      return false if @options.count > 1
+      return false if !@options.empty? && !@options[:number] && !@options[:email]
+      return false if @options.empty? && @args.count != 3
       return false if @options[:number] && @args.count != 4
       return false if @options[:email] && @args.count != 3
       return false if @args[0].to_i == 0 && @args[0] != "0"

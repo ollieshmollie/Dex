@@ -121,6 +121,8 @@ class Dex
   end
 
   def edit_contact_name(contact_index, new_first_name, new_last_name)
+    new_first_name = new_first_name.downcase.capitalize
+    new_last_name = new_last_name.downcase.capitalize
     contact_id = contact_id(contact_index)  
     begin
       @db.execute("update contacts "\
