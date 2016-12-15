@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
-require_relative "../lib/dex_manager.rb"
+require_relative "../lib/dex_controller.rb"
 
-DexManager.new(ARGV).run
+DexController.new(ARGV).run
