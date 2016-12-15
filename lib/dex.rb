@@ -49,12 +49,12 @@ class Dex
     @db.execute("select * from contacts order by last_name asc;") do |contact_hash|
       contact = Contact.from_hash(contact_hash)
       contact.index = contact_index
-      phone_number_index = 0
+      num_index = 0
       @db.execute("select * from phone_numbers where contact_id = #{contact_hash["id"]};") do |phone_number_hash|
         number = PhoneNumber.from_hash(phone_number_hash)
-        number.index = phone_number_index
+        number.index = num_index
         contact.phone_numbers << number
-        phone_number_index += 1
+        num_index += 1
       end
       email_index = 0
       @db.execute ("select * from emails where contact_id = #{contact_hash["id"]};") do |email_hash|
@@ -65,7 +65,7 @@ class Dex
       end
       contacts << contact
       contact_index += 1
-      phone_number_index = 0
+      num_index = 0
       email_index = 0
     end
     return contacts
@@ -78,7 +78,7 @@ class Dex
       @db.execute("insert into contacts (first_name, last_name)"\
                 "values ('#{first_name}', '#{last_name}');")
     rescue
-      puts "Contact already exists".red
+      puts "Error: Contact already exists".red
     end
   end
 
@@ -98,17 +98,26 @@ class Dex
     @db.execute("delete from contacts where id = #{contact_id};")
   end
 
-  def delete_phone_number(contact_index, phone_number_index)
-    phone_numbers = @db.execute("select * from phone_numbers where contact_id = #{contact_id}")
-    phone_number_id = phone_numbers[phone_number_index]["id"]
-    @db.execute("delete from phone_numbers where id = #{phone_number_id};")
+  def delete_phone_number(contact_index, num_index)
+    contact_id = contact_id(contact_index)
+    begin
+      phone_numbers = @db.execute("select * from phone_numbers where contact_id = #{contact_id}")
+      phone_number_id = phone_numbers[num_index]["id"]
+      @db.execute("delete from phone_numbers where id = #{phone_number_id};")
+    rescue
+      puts "Error: Index out of range".red
+    end
   end
 
   def delete_email(contact_index, email_index)
     contact_id = contact_id(contact_index)
-    emails = @db.execute("select * from emails where contact_id = #{contact_id};")
-    email_id = emails[email_index]["id"]
-    @db.execute("delete from emails where id = #{email_id};")
+    begin
+      emails = @db.execute("select * from emails where contact_id = #{contact_id};")
+      email_id = emails[email_index]["id"]
+      @db.execute("delete from emails where id = #{email_id};")
+    rescue
+      puts "Error: Index out of range".red
+    end
   end
 
   def edit_contact_name(contact_index, new_first_name, new_last_name)
@@ -119,23 +128,35 @@ class Dex
                   "last_name = '#{new_last_name}' "\
                   "where id = #{contact_id};")
     rescue
-      puts "Contact already exists".red
+      puts "Error: Contact already exists".red
     end
   end
 
-  def edit_phone_number(contact_index, new_type, new_number)
+  def edit_phone_number(contact_index, num_index, new_type, new_number)
     contact_id = contact_id(contact_index)
-    @db.execute("update phone_numbers "\
-                "set type = '#{new_type}', "\
-                "number = '#{new_number}' "\
-                "where contact_id = #{contact_id};")
+    begin
+      phone_numbers = @db.execute("select * from phone_numbers where contact_id = #{contact_id}")
+      phone_number_id = phone_numbers[num_index]["id"]
+      @db.execute("update phone_numbers "\
+                  "set type = '#{new_type}', "\
+                  "number = '#{new_number}' "\
+                  "where id = #{phone_number_id};")
+    rescue
+      puts "Error: Index out of range".red
+    end
   end
 
-  def edit_email(contact_index, new_address)
+  def edit_email(contact_index, email_index, new_address)
     contact_id = contact_id(contact_index)
-    @db.execute("update emails "\
-                "address = '#{new_address}' "\
-                "where contact_id = #{contact_id};")
+    begin
+      emails = @db.execute("select * from emails where contact_id = #{contact_id};")
+      email_id = emails[email_index]["id"]
+      @db.execute("update emails "\
+                  "set address = '#{new_address}' "\
+                  "where id = #{email_id};")
+    rescue
+      puts "Index out of range".red
+    end
   end
 
   def contact_id(contact_index)
