@@ -180,7 +180,7 @@ class Dex
   end
 
   def find_by_number(param)
-    param = param.downcase.capitalize
+    param = PhoneNumber.format_number(param)
     search_results = []
     contacts.each do |contact|
       contact.phone_numbers.each {|number| search_results.push(contact) if number.number.include?(param)}

@@ -4,17 +4,7 @@ class PhoneNumber
   include Comparable
   attr_accessor :number, :index, :type
 
-  def <=>(another_number)
-    type <=> another_number.type
-  end
-  
-  def initialize(type, number)
-    @index = nil
-    @type = type
-    @number = number
-  end
-
-  def formatted_number(number)
+  def self.format_number(number)
     n = number.gsub(/[^\d]/, "")
     chars = n.chars
     if chars.count == 10
@@ -33,17 +23,27 @@ class PhoneNumber
     return chars.join
   end
 
-  def to_hash
-    {index: index, type: type, number: formatted_number(number)}
-  end
-
   def self.from_hash(hash)
     number = self.new(hash["type"], hash["number"])
     # number.index = hash["index"]
     return number
   end
 
+  def <=>(another_number)
+    type <=> another_number.type
+  end
+  
+  def initialize(type, number)
+    @index = nil
+    @type = type
+    @number = number
+  end
+
+  def to_hash
+    {index: index, type: type, number: PhoneNumber.format_number(number)}
+  end
+
   def to_s
-    "[#{index}]" + " #{type.yellow}: #{formatted_number(number).bold}"
+    "[#{index}]" + " #{type.yellow}: #{PhoneNumber.format_number(number).bold}"
   end
 end

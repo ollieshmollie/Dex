@@ -64,8 +64,16 @@ class DexController
     case @command
 
     when "find"
-      param = @args[0]
-      puts @dex.find_by_name(param)
+      if @options.empty?
+        param = @args[0]
+        puts @dex.find_by_name(param)
+      elsif @options[:number]
+        param = @args[0]
+        puts @dex.find_by_number(param)
+      elsif @options[:email]
+        param = @args[0]
+        puts @dex.find_by_email(param)
+      end
 
     when "add"
       if @options.empty?
@@ -136,7 +144,7 @@ class DexController
   def args_are_valid?
     case @command
     when "find"
-      return false if !@options.empty?
+      return false if !@options.empty? && !@options[:number] && !@options[:email]
       return true
     when "add"
       return false if @options.count > 1
