@@ -105,7 +105,7 @@ class Dex
       phone_number_id = phone_numbers[num_index]["id"]
       @db.execute("delete from phone_numbers where id = #{phone_number_id};")
     rescue
-      puts "Error: Index out of range".red
+      puts "Error: Phone number index out of range".red
     end
   end
 
@@ -116,7 +116,7 @@ class Dex
       email_id = emails[email_index]["id"]
       @db.execute("delete from emails where id = #{email_id};")
     rescue
-      puts "Error: Index out of range".red
+      puts "Error: Email index out of range".red
     end
   end
 
@@ -142,7 +142,7 @@ class Dex
                   "number = '#{new_number}' "\
                   "where id = #{phone_number_id};")
     rescue
-      puts "Error: Index out of range".red
+      puts "Error: Phone number index out of range".red
     end
   end
 
@@ -155,7 +155,7 @@ class Dex
                   "set address = '#{new_address}' "\
                   "where id = #{email_id};")
     rescue
-      puts "Index out of range".red
+      puts "Error: Email index out of range".red
     end
   end
 
@@ -165,7 +165,7 @@ class Dex
       id_arr = @db.execute("select id from contacts where first_name = '#{contact.first_name}' and last_name = '#{contact.last_name}';")
       id_arr[0]["id"]
     rescue
-      puts "Error: Index out of range".red
+      puts "Error: Contact index out of range".red
       exit
     end
   end
