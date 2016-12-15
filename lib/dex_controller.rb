@@ -83,7 +83,7 @@ class DexController
         @dex.add_email(contact_index, address)
       end
 
-    when "delete"
+    when "rm"
       if @options.empty?
         contact_index = @args[0].to_i
         @dex.delete_contact(contact_index)
@@ -125,6 +125,10 @@ class DexController
         puts @dex
       end
 
+    # else
+    #   puts "Invalid input"
+    #   puts help_message
+    #   exit
     end
 
   end
@@ -143,7 +147,7 @@ class DexController
       return false if @options[:number] && @args[0].to_i == 0 && @args[0] != "0"
       return false if @options[:email] && @args[0].to_i == 0 && @args[0] != "0"
       return true
-    when "delete"
+    when "rm"
       return false if @options.count > 1
       return false if !@options.empty? && !@options[:number] && !@options[:email]
       return false if @options.count == 0 && @args.count != 1
