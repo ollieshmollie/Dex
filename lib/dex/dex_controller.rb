@@ -4,8 +4,8 @@ require 'dex/version'
 
 module Dex
   class DexController
-    def initialize(db, args)
-      @dex = Dex.new(db)
+    def initialize(args)
+      @dex = Dex.new
       @options = {}
       @opt_parser = OptionParser.new do |opt|
         opt.banner = "Usage: dex [COMMAND] [OPTIONS] [ARGUMENTS]"
@@ -133,7 +133,7 @@ module Dex
         elsif @options[:version]
           puts Dex::VERSION
         else
-          puts @dex
+          print @dex
         end
 
       end

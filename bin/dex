@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'dex'
 
-db = SQLite3::Database.new("#{Dir.pwd}/dex.sqlite3")
+HOME_DIR = File.expand_path("~")
+Dir.mkdir("#{HOME_DIR}/.dex") unless File.exists?("#{HOME_DIR}/.dex")
 
-Dex::DexController.new(db, ARGV).run
+Dex::DexController.new(ARGV).run
