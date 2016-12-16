@@ -8,6 +8,7 @@ A command line rolodex.
 
 ## Usage
 
+```
   -v                                Current version
   -h                                Help
 
@@ -23,6 +24,7 @@ A command line rolodex.
   find <param>                      Search by name
   find -p <param>                   Search by number
   find -e <param>                   Search by email
+```
 
 ## Contributing
 
