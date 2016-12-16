@@ -67,14 +67,12 @@ module Dex
       case @command
 
       when "find"
+        param = @args[0]
         if @options.empty?
-          param = @args[0]
           puts @dex.find_by_name(param)
         elsif @options[:number]
-          param = @args[0]
           puts @dex.find_by_number(param)
         elsif @options[:email]
-          param = @args[0]
           puts @dex.find_by_email(param)
         end
 

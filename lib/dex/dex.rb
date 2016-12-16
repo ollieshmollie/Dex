@@ -86,6 +86,7 @@ module Dex
 
     def add_phone_number(contact_index, type, number)
       type = type.downcase.capitalize
+      number = number.gsub(/\D/, "")
       contact_id = contact_id(contact_index)
       @db.execute("insert into phone_numbers (type, number, contact_id) values ('#{type}', '#{number}', #{contact_id});")
     end
