@@ -1,22 +1,41 @@
-# dex
-## A command line rolodex, version 1.2
+# Dex
 
-Usage:
-  -v                                Current version
-  -h                                Help
+Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dex`. To experiment with that code, run `bin/console` for an interactive prompt.
 
-  add first last type num           Adds new contact
-  add -n first last                 Adds new name
-  add -t index type num             Adds contact number
-  add -e index address              Adds contact email
-  delete index                      Deletes contact
-  delete -t index num_index         Deletes contact number
-  delete -e index e_index           Deletes contact email
-  edit -n index first last          Edits contact name
-  edit -t index num_index type num  Edits contact number
-  edit -e index e_index address     Edits contact email
-  find -n <param>                   Searches by name (DEFAULT)
-  find -t <param>                   Searches by number
-  find -e <param>                   Searches by email
-  find -f <letter>                  Names by first name letter
-  find -l <letter>                  Names by last name letter
+TODO: Delete this and the text above, and describe your gem
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'dex'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install dex
+
+## Usage
+
+TODO: Write usage instructions here
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/dex.
+
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
