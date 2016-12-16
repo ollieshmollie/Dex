@@ -131,7 +131,7 @@ module Dex
         if @options[:help]
           puts help_message
         elsif @options[:version]
-          puts Dex::VERSION
+          puts VERSION
         else
           print @dex
         end
