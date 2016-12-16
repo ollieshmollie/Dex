@@ -7,7 +7,8 @@ module Dex
     attr_reader :contacts
     
     def initialize
-      @db = SQLite3::Database.new("/Users/ollieshmollie/Projects/Ruby/dex/dex.sqlite3")
+      db_path = File.expand_path("../..", __FILE__)
+      @db = SQLite3::Database.new("#{file_path}/dex.sqlite3")
       @db.results_as_hash = true
       @db.execute("pragma foreign_keys = on")
       create_tables
