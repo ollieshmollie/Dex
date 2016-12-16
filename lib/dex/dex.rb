@@ -4,11 +4,10 @@ require_relative 'contact.rb'
 
 module Dex
   class Dex
-    attr_reader :contacts
+    attr_reader :contacts, :db_path
     
-    def initialize
-      db_path = File.expand_path("../..", __FILE__)
-      @db = SQLite3::Database.new("#{file_path}/dex.sqlite3")
+    def initialize(db)
+      @db = db
       @db.results_as_hash = true
       @db.execute("pragma foreign_keys = on")
       create_tables

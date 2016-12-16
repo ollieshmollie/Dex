@@ -4,8 +4,8 @@ require 'dex/version'
 
 module Dex
   class DexController
-    def initialize(args)
-      @dex = Dex.new
+    def initialize(db, args)
+      @dex = Dex.new(db)
       @options = {}
       @opt_parser = OptionParser.new do |opt|
         opt.banner = "Usage: dex [COMMAND] [OPTIONS] [ARGUMENTS]"
