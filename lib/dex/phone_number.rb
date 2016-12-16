@@ -3,6 +3,7 @@ require 'colored'
 module Dex
   class PhoneNumber
     include Comparable
+    attr_reader :primary_key
     attr_accessor :number, :index, :type
 
     def self.format_number(number)
@@ -25,7 +26,7 @@ module Dex
     end
 
     def self.from_hash(hash)
-      number = self.new(hash["type"], hash["number"])
+      number = self.new(hash["type"], hash["number"], hash["id"])
       return number
     end
 
@@ -33,8 +34,9 @@ module Dex
       type <=> another_number.type
     end
     
-    def initialize(type, number)
+    def initialize(type, number, primary_key)
       @index = nil
+      @primary_key = primary_key
       @type = type
       @number = number
     end

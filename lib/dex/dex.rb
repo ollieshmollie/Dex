@@ -163,45 +163,41 @@ module Dex
       end
     end
 
+    def find_by_name(param)
+      param = param.downcase.capitalize
+      search_results = []
+      @contacts.each {|contact| search_results.push(contact) if contact.full_name.include?(param)}
+      search_results
+    end
+
+    def find_by_number(param)
+      contact_ids = @db.execute("select distinct contact_id from phone_numbers where number like '%#{param}%';")
+      contact_ids.map {|hash| convert_to_contact(hash["contact_id"]) } 
+    end
+
+    def find_by_email(param)
+      contact_ids = @db.execute("select distinct contact_id from emails where address like '%#{param}%';")
+      contact_ids.map {|hash| convert_to_contact(hash["contact_id"]) }
+    end
+
     def contact_id(contact_index)
       begin
         contact = @contacts[contact_index]
-        id_arr = @db.execute("select id from contacts where first_name = '#{contact.first_name}' and last_name = '#{contact.last_name}';")
-        id_arr[0]["id"]
+        contact.primary_key
       rescue
         puts "Error: Contact index out of range".red
         exit
       end
     end
 
-    def find_by_name(param)
-      param = param.downcase.capitalize
-      search_results = []
-      contacts.each {|contact| search_results.push(contact) if contact.full_name.include?(param)}
-      search_results
-    end
-
-    def find_by_number(param)
-      param = PhoneNumber.format_number(param)
-      search_results = []
-      contacts.each do |contact|
-        contact.phone_numbers.each {|number| search_results.push(contact) if number.number.include?(param)}
-      end
-      search_results
-    end
-
-    def find_by_email(param)
-      param = param.downcase.capitalize
-      search_results = []
-      contacts.each do |contact|
-        contact.emails.each {|email| search_results.push(contact) if email.address.include?(param)}
-      end
-      search_results
+    def convert_to_contact(contact_id)
+      results = @contacts.select {|contact| contact.primary_key == contact_id }
+      results[0]
     end
 
     def to_s
       string = ""
-      contacts.each {|contact| string += contact.to_s}
+      @contacts.each {|contact| string += contact.to_s}
       return string
     end
   end

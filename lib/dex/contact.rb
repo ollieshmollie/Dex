@@ -5,22 +5,24 @@ require 'colored'
 module Dex
   class Contact
     include Comparable
-    attr_accessor :index, :first_name, :last_name, :phone_numbers, :emails
+    attr_reader :primary_key, :phone_numbers, :emails, :first_name, :last_name
+    attr_accessor :index
 
     def <=>(another_contact)
       full_name <=> another_contact.full_name
     end
 
-    def initialize(first_name, last_name)
+    def initialize(first_name, last_name, primary_key)
       @index = nil
       @first_name = first_name
       @last_name = last_name
+      @primary_key = primary_key
       @phone_numbers = []
       @emails = []
     end
 
     def self.from_hash(hash)
-      contact = self.new(hash["first_name"], hash["last_name"])
+      contact = self.new(hash["first_name"], hash["last_name"], hash["id"])
       return contact
     end
 
