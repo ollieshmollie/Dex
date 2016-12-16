@@ -1,22 +1,37 @@
-# dex
-## A command line rolodex, version 1.2
+# Dex
 
-Usage:
+A command line rolodex.
+
+## Installation
+
+  `$ gem install dex`
+
+## Usage
+
+```
   -v                                Current version
   -h                                Help
 
-  add first last type num           Adds new contact
-  add -n first last                 Adds new name
-  add -t index type num             Adds contact number
-  add -e index address              Adds contact email
-  delete index                      Deletes contact
-  delete -t index num_index         Deletes contact number
-  delete -e index e_index           Deletes contact email
-  edit -n index first last          Edits contact name
-  edit -t index num_index type num  Edits contact number
-  edit -e index e_index address     Edits contact email
-  find -n <param>                   Searches by name (DEFAULT)
-  find -t <param>                   Searches by number
-  find -e <param>                   Searches by email
-  find -f <letter>                  Names by first name letter
-  find -l <letter>                  Names by last name letter
+  add first last                    Adds new name
+  add index -p type num             Adds contact number
+  add index -e address              Adds contact email
+  rm index                          Deletes contact
+  rm index -p num_index             Deletes contact number
+  rm index -e e_index               Deletes contact email
+  edit index first last             Edits contact name
+  edit index -p num_index type num  Edits contact number
+  edit index -e e_index address     Edits contact email
+  find <param>                      Search by name
+  find -p <param>                   Search by number
+  find -e <param>                   Search by email
+```
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/ollieshmollie/dex.
+
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
