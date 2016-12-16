@@ -51,8 +51,10 @@ module Dex
         edit index first last             Edits contact name
         edit index -p num_index type num  Edits contact number
         edit index -e e_index address     Edits contact email
-        find <param>                      Search
-        EOF
+        find <param>                      Search by name
+        find -p <param>                   Search by number
+        find -e <param>                   Search by email
+      EOF
     end
 
     def run

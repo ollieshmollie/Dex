@@ -1,38 +1,32 @@
 # Dex
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/dex`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A command line rolodex.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'dex'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install dex
+  `$ gem install dex`
 
 ## Usage
 
-TODO: Write usage instructions here
+  -v                                Current version
+  -h                                Help
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  add first last                    Adds new name
+  add index -p type num             Adds contact number
+  add index -e address              Adds contact email
+  rm index                          Deletes contact
+  rm index -p num_index             Deletes contact number
+  rm index -e e_index               Deletes contact email
+  edit index first last             Edits contact name
+  edit index -p num_index type num  Edits contact number
+  edit index -e e_index address     Edits contact email
+  find <param>                      Search by name
+  find -p <param>                   Search by number
+  find -e <param>                   Search by email
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/dex.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ollieshmollie/dex.
 
 
 ## License
