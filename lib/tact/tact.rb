@@ -1,83 +1,76 @@
 require_relative "rolodex.rb"
 require 'optparse'
 require 'tact/version'
+require 'colored'
 
 module Tact
   class Tact
     def initialize(args)
       @dex = Rolodex.new
       @options = {}
-      @opt_parser = OptionParser.new do |opt|
-        opt.banner = "Usage: tact [COMMAND] [OPTIONS] [ARGUMENTS]"
-        opt.on('-n', '--name', 'Edit name') do
-          @options[:name] = true
-        end
-        opt.on('-p', '--phone', 'Edit phone number') do
-          @options[:number] = true
-        end
-        opt.on('-e', '--email', 'Edit email') do
-          @options[:email] = true
-        end
-        opt.on('-f', '--first', 'By first name') do
-          @options[:first] = true
-        end
-        opt.on('-l', '--last', 'By last name') do
-          @options[:last] = true        
-        end
-        opt.on("-v", "--version", "Version") do 
-          @options[:version] = true
-        end
-        opt.on("-h", "--help", "Help") do
-          @options[:help] = true
-        end
+      begin
+        OptionParser.new do |opt|
+          opt.banner = "Usage: tact [OPTIONS] [ARGUMENTS]"
+          opt.on('-n', '--new', 'New entry') do
+            @options[:new] = true
+          end
+          opt.on('-u', '--update', 'Update entry') do
+            @options[:update] = true 
+          end
+          opt.on('-d', '--delete', 'Delete entry') do
+            @options[:delete] = true
+          end
+          opt.on('-p', '--phone', 'Edit phone number') do
+            @options[:number] = true
+          end
+          opt.on('-e', '--email', 'Edit email') do
+            @options[:email] = true
+          end
+          opt.on("-v", "--version", "Version") do 
+            @options[:version] = true
+          end
+          opt.on("-h", "--help", "Help") do
+            @options[:help] = true
+          end
+        end.parse!
+      rescue
+        puts "Invalid option".red
+        puts help_message
       end
-      @opt_parser.parse!
-      @command = args.shift
       @args = args
     end
 
     def help_message
       <<~EOF
-      Usage:
-        -v                                Current version
-        -h                                Help
+  
+        -v                                    Current version
+        -h                                    Help
 
-        add first last                    Adds new name
-        add index -p type num             Adds contact number
-        add index -e address              Adds contact email
-        rm index                          Deletes contact
-        rm index -p num_index             Deletes contact number
-        rm index -e e_index               Deletes contact email
-        edit index first last             Edits contact name
-        edit index -p num_index type num  Edits contact number
-        edit index -e e_index address     Edits contact email
-        find <param>                      Search by name
-        find -p <param>                   Search by number
-        find -e <param>                   Search by email
+        <param>                               Search by name
+        -p <param>                            Search by number
+        -e <param>                            Search by email
+        -n <first> <last>                     Adds new name
+        -np <index> <type> <num>              Adds contact number
+        -ne <index> <address>                 Adds contact email
+        -d <index>                            Deletes contact
+        -dp <index> <num_index>               Deletes contact number
+        -de <index> <e_index>                 Deletes contact email
+        -u <index> <first> <last>             Edits contact name
+        -up <index> <num_index> <type> <num>  Edits contact number
+        -ue <index> <e_index> <address>       Edits contact email
+
       EOF
     end
 
     def run
       if !args_are_valid?
-        puts "Invalid input"
+        puts "Error: Invalid input".red
         puts help_message
         exit
       end
 
-      case @command
-
-      when "find"
-        param = @args[0]
-        if @options.empty?
-          puts @dex.find_by_name(param)
-        elsif @options[:number]
-          puts @dex.find_by_number(param)
-        elsif @options[:email]
-          puts @dex.find_by_email(param)
-        end
-
-      when "add"
-        if @options.empty?
+      if @options[:new]
+        if !@options[:number] && !@options[:email]
           first_name = @args[0]
           last_name = @args[1]
           @dex.add_contact(first_name, last_name)
@@ -91,9 +84,9 @@ module Tact
           address = @args[1]
           @dex.add_email(contact_index, address)
         end
-
-      when "rm"
-        if @options.empty?
+      
+      elsif @options[:delete]
+        if !@options[:number] && !@options[:email]
           contact_index = @args[0].to_i
           @dex.delete_contact(contact_index)
         elsif @options[:number]
@@ -106,8 +99,8 @@ module Tact
           @dex.delete_email(contact_index, email_index)
         end
 
-      when "edit"
-        if @options.empty?
+      elsif @options[:update]
+        if !@options[:number] && !@options[:email]
           contact_index = @args[0].to_i
           first_name = @args[1]
           last_name = @args[2]
@@ -125,59 +118,87 @@ module Tact
           @dex.edit_email(contact_index, email_index, new_address)
         end
         
-      when nil
-        if @options[:help]
-          puts help_message
-        elsif @options[:version]
-          puts "tact version #{VERSION}"
-        else
+      elsif @options[:help]
+        puts help_message
+      elsif @options[:version]
+        puts "tact version #{VERSION}"
+      else
+        if @args.empty?
           print @dex
+        else
+          params = @args.join(' ')
+          if @options.empty?
+            puts @dex.find_by_name(params)
+          elsif @options[:number]
+            puts @dex.find_by_number(params)
+          elsif @options[:email]
+            puts @dex.find_by_email(params)
+          end
         end
-
       end
-
     end
 
     def args_are_valid?
-      case @command
-      when "find"
-        return false if !@options.empty? && !@options[:number] && !@options[:email]
-        return true
-      when "add"
-        return false if @options.count > 1
-        return false if !@options.empty? && !@options[:name] && !@options[:number] && !@options[:email]
-        return false if @options[:name] && @args.count != 2
-        return false if @options[:number] && @args.count != 3
-        return false if @options[:email] && @args.count != 2
-        return false if @options[:number] && @args[0].to_i == 0 && @args[0] != "0"
-        return false if @options[:email] && @args[0].to_i == 0 && @args[0] != "0"
-        return true
-      when "rm"
-        return false if @options.count > 1
-        return false if !@options.empty? && !@options[:number] && !@options[:email]
-        return false if @options.count == 0 && @args.count != 1
-        return false if @args[0].to_i == 0 && @args[0] != "0"
-        return false if @options[:number] && @args.count != 2
-        return false if @options[:number] && @args[1].to_i == 0 && @args[1] != "0"
-        return false if @options[:email] && @args.count != 2
-        return false if @options[:email] && @args[1].to_i == 0 && @args[1] != "0"
-        return true
-      when "edit"
-        return false if @options.count > 1
-        return false if !@options.empty? && !@options[:number] && !@options[:email]
-        return false if @options.empty? && @args.count != 3
-        return false if @options[:number] && @args.count != 4
-        return false if @options[:email] && @args.count != 3
-        return false if @args[0].to_i == 0 && @args[0] != "0"
-        return false if @options[:number] && @args[1].to_i == 0 && @args[1] != "0"
-        return false if @options[:email] && @args[1].to_i == 0 && @args[1] != "0"
-        return true
-      when nil
-        return false if @options.count > 1
-        return false if @options.count == 1 && (!@options[:help] && !@options[:version])
-        return true
+      case 
+
+      when @options[:new]
+        return false if @options[:delete] || @options[:version] || @options[:update] || @options[:help]
+        if @options[:number]
+          return false if @options[:email]
+          return false if @args.length != 3
+          return false if @args[0].to_i == 0
+        elsif @options[:email]
+          return false if @args.length != 2
+          return false if @args[0].to_i == 0
+        else
+          return false if @args.length != 2
+        end
+        true
+
+      when @options[:delete]
+        return false if @options[:new] || @options[:version] || @options[:update] || @options[:help]
+        if @options[:number]
+          return false if @options[:email]
+          return false if @args.length != 2
+          return false if @args[0].to_i == 0
+          return false if @args[1].to_i == 0
+        elsif @options[:email]
+          return false if @options[:number]
+          return false if @args.length != 2
+          return false if @args[0].to_i == 0
+          return false if @args[1].to_i == 0
+        else
+          return false if @args.length != 1
+          return false if @args[0].to_i == 0
+        end
+        true
+      
+      when @options[:update]
+        return false if @options[:new] || @options[:version] || @options[:delete] || @options[:help]
+        if @options[:number]
+          return false if @options[:email]
+          return false if @args.length != 4
+          return false if @args[0].to_i == 0
+        elsif @options[:email]
+          return false if @options[:number]
+          return false if @args.length != 3
+          return false if @args[0].to_i == 0
+        else
+          return false if @args.length != 3
+          return false if @args[0].to_i == 0
+        end
+        true
+      
+      when @options[:help]
+        return false if @options[:new] || @options[:version] || @options[:delete] || @options[:update]
+        true
+
+      when @options[:version]
+        return false if @options[:new] || @options[:update] || @options[:delete] || @options[:help]
+        true
+      
       else
-        return false
+        true
       end
     end
   end

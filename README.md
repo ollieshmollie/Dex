@@ -8,22 +8,22 @@ A command line rolodex.
 
 ## Usage
 
-```
-  -v                                Current version
-  -h                                Help
+```     
+  -v                                    Current version
+  -h                                    Help
 
-  add first last                    Adds new name
-  add index -p type num             Adds contact number
-  add index -e address              Adds contact email
-  rm index                          Deletes contact
-  rm index -p num_index             Deletes contact number
-  rm index -e e_index               Deletes contact email
-  edit index first last             Edits contact name
-  edit index -p num_index type num  Edits contact number
-  edit index -e e_index address     Edits contact email
-  find <param>                      Search by name
-  find -p <param>                   Search by number
-  find -e <param>                   Search by email
+  <param>                               Search by name
+  -p <param>                            Search by number
+  -e <param>                            Search by email
+  -n <first> <last>                     Adds new name
+  -np <index> <type> <num>              Adds contact number
+  -ne <index> <address>                 Adds contact email
+  -d <index>                            Deletes contact
+  -dp <index> <num_index>               Deletes contact number
+  -de <index> <e_index>                 Deletes contact email
+  -u <index> <first> <last>             Edits contact name
+  -up <index> <num_index> <type> <num>  Edits contact number
+  -ue <index> <e_index> <address>       Edits contact email
 ```
 
 ## Contributing

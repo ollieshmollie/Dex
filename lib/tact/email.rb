@@ -8,14 +8,13 @@ module Tact
       self.address <=> another_email.address
     end
 
-    def initialize(address, primary_key)
+    def initialize(address)
       @index = nil
       @address = address
-      @primary_key = primary_key
     end
 
     def self.from_hash(hash)
-      address = self.new(hash["address"], hash["id"])
+      address = self.new(hash["address"])
       return address
     end
 
