@@ -2,7 +2,7 @@ require_relative "phone_number.rb"
 require_relative "email.rb"
 require 'colored'
 
-module Dex
+module Tact
   class Contact
     include Comparable
     attr_reader :primary_key, :phone_numbers, :emails, :first_name, :last_name

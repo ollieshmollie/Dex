@@ -1,4 +1,4 @@
-require_relative "tact.rb"
+require_relative "rolodex.rb"
 require 'optparse'
 require 'tact/version'
 
