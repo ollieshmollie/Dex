@@ -1,5 +1,0 @@
-require 'dex/version'
-require 'dex/contact'
-require 'dex/dex_controller'
-require 'dex/email'
-require 'dex/phone_number'

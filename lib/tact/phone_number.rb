@@ -1,6 +1,6 @@
 require 'colored'
 
-module Dex
+module Tact
   class PhoneNumber
     include Comparable
     attr_reader :primary_key

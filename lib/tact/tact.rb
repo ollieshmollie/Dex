@@ -1,14 +1,14 @@
-require_relative "dex.rb"
+require_relative "tact.rb"
 require 'optparse'
-require 'dex/version'
+require 'tact/version'
 
-module Dex
-  class DexController
+module Tact
+  class InputParser
     def initialize(args)
-      @dex = Dex.new
+      @dex = Rolodex.new
       @options = {}
       @opt_parser = OptionParser.new do |opt|
-        opt.banner = "Usage: dex [COMMAND] [OPTIONS] [ARGUMENTS]"
+        opt.banner = "Usage: tact [COMMAND] [OPTIONS] [ARGUMENTS]"
         opt.on('-n', '--name', 'Edit name') do
           @options[:name] = true
         end
@@ -129,7 +129,7 @@ module Dex
         if @options[:help]
           puts help_message
         elsif @options[:version]
-          puts VERSION
+          puts "tact version #{VERSION}"
         else
           print @dex
         end

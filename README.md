@@ -1,10 +1,10 @@
-# Dex
+# tact
 
 A command line rolodex.
 
 ## Installation
 
-  `$ gem install dex`
+  `$ gem install tact`
 
 ## Usage
 
@@ -28,7 +28,7 @@ A command line rolodex.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ollieshmollie/dex.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ollieshmollie/tact.
 
 
 ## License

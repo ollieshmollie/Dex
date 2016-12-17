@@ -2,12 +2,12 @@ require 'sqlite3'
 require 'colored'
 require_relative 'contact.rb'
 
-module Dex
-  class Dex
+module Tact
+  class Rolodex
     attr_reader :contacts, :db_path
     
     def initialize
-      @db = SQLite3::Database.new("#{File.expand_path("~")}/.dex/dex.sqlite3")
+      @db = SQLite3::Database.new("#{File.expand_path("~")}/.tact/tact.sqlite3")
       @db.results_as_hash = true
       @db.execute("pragma foreign_keys = on")
       create_tables

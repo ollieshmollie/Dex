@@ -1,4 +1,4 @@
-module Dex
+module Tact
   class Email
     include Comparable
     attr_reader :primary_key

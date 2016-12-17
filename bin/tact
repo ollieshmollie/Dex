@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require 'tact'
+
+HOME_DIR = File.expand_path("~")
+Dir.mkdir("#{HOME_DIR}/.tact") unless File.exists?("#{HOME_DIR}/.tact")
+
+Tact::DexController.new(ARGV).run
