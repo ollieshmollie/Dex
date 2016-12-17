@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.executables   = ["tact"]
-  spec.require_paths = ["lib", "tact.sqlite3"]
+  spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "sqlite3", "~> 1.3"
   spec.add_runtime_dependency "colored", "~> 1.2"

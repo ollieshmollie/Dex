@@ -7,6 +7,8 @@ module Tact
     attr_reader :contacts, :db_path
     
     def initialize
+      home_dir = File.expand_path("~")
+      Dir.mkdir("#{home_dir}/.tact") unless File.exists?("#{home_dir}/.tact")
       @db = SQLite3::Database.new("#{File.expand_path("~")}/.tact/tact.sqlite3")
       @db.results_as_hash = true
       @db.execute("pragma foreign_keys = on")
