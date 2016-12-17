@@ -3,7 +3,7 @@ require 'optparse'
 require 'tact/version'
 
 module Tact
-  class InputParser
+  class Tact
     def initialize(args)
       @dex = Rolodex.new
       @options = {}
