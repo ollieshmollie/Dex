@@ -50,18 +50,18 @@ module Tact
     def load
       contacts = []
       contact_index = 1
-      @db.execute("select * from contacts order by last_name asc;") do |contact_hash|
+      @db.execute("select * from contacts order by last_name asc, first_name asc;") do |contact_hash|
         contact = Contact.from_hash(contact_hash)
         contact.index = contact_index
         num_index = 1
-        @db.execute("select * from phone_numbers where contact_id = #{contact_hash["id"]};") do |phone_number_hash|
+        @db.execute("select * from phone_numbers where contact_id = #{contact_hash["id"]} order by type asc;") do |phone_number_hash|
           number = PhoneNumber.from_hash(phone_number_hash)
           number.index = num_index
           contact.phone_numbers << number
           num_index += 1
         end
         email_index = 1
-        @db.execute ("select * from emails where contact_id = #{contact_hash["id"]};") do |email_hash|
+        @db.execute ("select * from emails where contact_id = #{contact_hash["id"]} order by address asc;") do |email_hash|
           email = Email.from_hash(email_hash)
           email.index = email_index
           contact.emails << email
@@ -104,25 +104,13 @@ module Tact
     end
 
     def delete_phone_number(contact_index, num_index)
-      contact_id = contact_id(contact_index)
-      begin
-        phone_numbers = @db.execute("select * from phone_numbers where contact_id = #{contact_id}")
-        phone_number_id = phone_numbers[num_index - 1]["id"]
-        @db.execute("delete from phone_numbers where id = #{phone_number_id};")
-      rescue
-        puts "Error: Phone number index out of range".red
-      end
+      phone_number_id = phone_number_id(contact_index, num_index)
+      @db.execute("delete from phone_numbers where id = #{phone_number_id};")
     end
 
     def delete_email(contact_index, email_index)
-      contact_id = contact_id(contact_index)
-      begin
-        emails = @db.execute("select * from emails where contact_id = #{contact_id};")
-        email_id = emails[email_index - 1]["id"]
-        @db.execute("delete from emails where id = #{email_id};")
-      rescue
-        puts "Error: Email index out of range".red
-      end
+      email_id = email_id(contact_index, email_index)
+      @db.execute("delete from emails where id = #{email_id};")
     end
 
     def edit_contact_name(contact_index, new_first_name, new_last_name)
@@ -142,29 +130,54 @@ module Tact
     def edit_phone_number(contact_index, num_index, new_type, new_number)
       new_type = new_type.downcase.capitalize
       new_number = new_number.gsub(/\D/, "")
-      contact_id = contact_id(contact_index)
+      phone_number_id = phone_number_id(contact_index, num_index)
+      @db.execute("update phone_numbers "\
+                  "set type = '#{new_type}', "\
+                  "number = '#{new_number}' "\
+                  "where id = #{phone_number_id};")
+    end
+
+    def edit_email(contact_index, email_index, new_address)
+      email_id = email_id(contact_index, email_index)
+      @db.execute("update emails "\
+                  "set address = '#{new_address}' "\
+                  "where id = #{email_id};")
+    end
+
+    def phone_number_id(contact_index, num_index)
+      contact = check_contact_index(contact_index)
       begin
-        phone_numbers = @db.execute("select * from phone_numbers where contact_id = #{contact_id}")
-        phone_number_id = phone_numbers[num_index - 1]["id"]
-        @db.execute("update phone_numbers "\
-                    "set type = '#{new_type}', "\
-                    "number = '#{new_number}' "\
-                    "where id = #{phone_number_id};")
+        contact.phone_numbers[num_index - 1].primary_key
       rescue
         puts "Error: Phone number index out of range".red
       end
     end
 
-    def edit_email(contact_index, email_index, new_address)
-      contact_id = contact_id(contact_index)
+    def email_id(contact_index, email_index)
+      contact = check_contact_index(contact_index)
       begin
-        emails = @db.execute("select * from emails where contact_id = #{contact_id};")
-        email_id = emails[email_index - 1]["id"]
-        @db.execute("update emails "\
-                    "set address = '#{new_address}' "\
-                    "where id = #{email_id};")
+        contact.emails[email_index - 1].primary_key
       rescue
         puts "Error: Email index out of range".red
+      end
+    end
+
+    def contact_id(contact_index)
+      begin
+        contact = @contacts[contact_index - 1]
+        contact.primary_key
+      rescue
+        puts "Error: Contact index out of range".red
+        exit
+      end
+    end
+
+    def check_contact_index(contact_index)
+      begin
+        @contacts[contact_index - 1]
+      rescue
+        puts puts "Error: Contact index out of range".red
+        exit
       end
     end
 
@@ -183,16 +196,6 @@ module Tact
     def find_by_email(param)
       contact_ids = @db.execute("select distinct contact_id from emails where address like '%#{param}%';")
       contact_ids.map {|hash| convert_to_contact(hash["contact_id"]) }
-    end
-
-    def contact_id(contact_index)
-      begin
-        contact = @contacts[contact_index - 1]
-        contact.primary_key
-      rescue
-        puts "Error: Contact index out of range".red
-        exit
-      end
     end
 
     def convert_to_contact(contact_id)
