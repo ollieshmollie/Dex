@@ -26,7 +26,7 @@ module Tact
     end
 
     def self.from_hash(hash)
-      number = self.new(hash["type"], hash["number"])
+      number = self.new(hash["type"], hash["number"], hash["id"])
       return number
     end
 
@@ -34,10 +34,11 @@ module Tact
       type <=> another_number.type
     end
     
-    def initialize(type, number)
+    def initialize(type, number, primary_key)
       @index = nil
       @type = type
       @number = number
+      @primary_key = primary_key
     end
 
     def to_s
