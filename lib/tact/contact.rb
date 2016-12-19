@@ -4,8 +4,7 @@ require_relative "email"
 
 module Tact
   class Contact
-    attr_reader :id
-    attr_accessor :index, :first_name, :last_name
+    attr_accessor :index, :first_name, :last_name, :id
 
     @@db = Database.new.db
 
@@ -33,7 +32,7 @@ module Tact
     end
 
     def self.delete(id)
-      @@db.execute("delete from contacts where id = ?;", [id])
+      @@db.execute("delete from contacts where id = ?;", [id]) ? true : false
     end
 
     def initialize(first_name, last_name, primary_key=nil, index=nil)
@@ -46,9 +45,14 @@ module Tact
     def save
       begin
         if @id == nil
-          @@db.execute("insert into contacts (first_name, last_name) values (?, ?);", [@first_name, @last_name]) ? true : false
+          if @@db.execute("insert into contacts (first_name, last_name) values (?, ?);", [@first_name, @last_name])
+            @id = @@db.execute("select last_insert_rowid()")[0]["last_insert_rowid()"]
+            self
+          else
+            false
+          end
         else
-          @@db.execute("update contacts set first_name = ?, last_name = ? where id = ?;", [@first_name, @last_name, @id]) ? true : false
+          @@db.execute("update contacts set first_name = ?, last_name = ? where id = ?;", [@first_name, @last_name, @id]) ? self : false
         end
       rescue
         puts "Error: Contact already exists".red 

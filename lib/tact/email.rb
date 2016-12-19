@@ -24,9 +24,14 @@ module Tact
 
     def save
       if @id == nil
-        @@db.execute("insert into emails (address, contact_id) values (?, ?);", [@address, @contact_id]) ? true : false
+        if @@db.execute("insert into emails (address, contact_id) values (?, ?);", [@address, @contact_id])
+          @id = @@db.execute("select last_insert_rowid();")[0]["last_insert_rowid()"]
+          self
+        else
+          false
+        end
       else
-        @@db.execute("update emails set address = ?, contact_id = ? where id = ?;", [@address, @contact_id]) ? true : false
+        @@db.execute("update emails set address = ?, contact_id = ? where id = ?;", [@address, @contact_id]) ? self : false
       end
     end
 

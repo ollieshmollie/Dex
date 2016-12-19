@@ -59,9 +59,14 @@ module Tact
 
     def save
       if @id == nil
-        @@db.execute("INSERT INTO phone_numbers (type, number, contact_id) values (?, ?, ?);", [@type, @number, @contact_id]) ? true : false
+        if @@db.execute("INSERT INTO phone_numbers (type, number, contact_id) values (?, ?, ?);", [@type, @number, @contact_id])
+          @id = @@db.execute("select last_insert_rowid();")[0]["last_insert_rowid()"]
+          self
+        else
+          false
+        end
       else
-        @@db.execute("update phone_numbers set type = ?, number = ?, contact_id = ? where id = ?;", [@type, @number, @contact_id]) ? true : false
+        @@db.execute("update phone_numbers set type = ?, number = ?, contact_id = ? where id = ?;", [@type, @number, @contact_id]) ? self : false
       end
     end
 
