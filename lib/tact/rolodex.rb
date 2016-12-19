@@ -13,8 +13,7 @@ module Tact
 
     def load_cards
       cards = Contact.all.each_with_index.map do |contact, index|
-        contact.index = index + 1
-        Card.new(contact)
+        Card.new(contact, index + 1)
       end
       cards
     end

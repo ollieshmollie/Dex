@@ -27,8 +27,8 @@ module Tact
       return chars.join
     end
 
-    def self.from_hash(hash, index=nil)
-      self.new(hash["type"], hash["number"], hash["contact_id"], hash["id"], index)
+    def self.from_hash(hash)
+      self.new(hash["type"], hash["number"], hash["contact_id"], hash["id"])
     end
 
     def self.all
@@ -49,9 +49,8 @@ module Tact
       number_hashes = @@db.execute("select * from phone_numbers where number = ?", [number])
     end
     
-    def initialize(type, number, contact_id, primary_key=nil, index=nil)
+    def initialize(type, number, contact_id, primary_key=nil)
       @id = primary_key
-      @index = index
       @type = type.downcase.capitalize
       @number = number.gsub(/\D/, "")
       @contact_id = contact_id
@@ -71,7 +70,7 @@ module Tact
     end
 
     def to_s
-      "[#{index}]" + " #{type.yellow}: #{PhoneNumber.format_number(number).bold}"
+      "#{type.yellow}: #{PhoneNumber.format_number(number).bold}"
     end
   end
 end

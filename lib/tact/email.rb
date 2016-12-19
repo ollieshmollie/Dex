@@ -7,15 +7,15 @@ module Tact
 
     @@db = Database.new.db
 
-    def self.from_hash(hash, index)
-      self.new(hash["address"], hash["contact_id"], hash["id"], index)
+    def self.from_hash(hash)
+      self.new(hash["address"], hash["contact_id"], hash["id"])
     end
 
     def self.delete(id)
       @@db.execute("delete from emails where id = ?;", [id])
     end
 
-    def initialize(address, contact_id, primary_key=nil, index=nil)
+    def initialize(address, contact_id, primary_key=nil)
       @id = primary_key
       @index = index
       @address = address
@@ -36,7 +36,7 @@ module Tact
     end
 
     def to_s
-      "[#{@index}] <#{@address}>"
+      "<#{@address}>"
     end
   end
 end

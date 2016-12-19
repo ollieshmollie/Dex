@@ -9,13 +9,13 @@ module Tact
 
     @@db = Database.new.db
 
-    def self.from_hash(hash, index=nil)
-      contact = self.new(hash["first_name"], hash["last_name"], hash["id"], index)
+    def self.from_hash(hash)
+      contact = self.new(hash["first_name"], hash["last_name"], hash["id"])
     end
 
     def self.all
       contact_hashes = @@db.execute("select * from contacts order by last_name asc, first_name asc;")
-      contact_hashes.each_with_index.map {|c_hash, index| self.from_hash(c_hash, index + 1) }
+      contact_hashes.each_with_index.map {|c_hash, index| self.from_hash(c_hash) }
     end
 
     def self.find_by_id(id)
@@ -36,9 +36,8 @@ module Tact
       @@db.execute("delete from contacts where id = ?;", [id]) ? true : false
     end
 
-    def initialize(first_name, last_name, primary_key=nil, index=nil)
+    def initialize(first_name, last_name, primary_key=nil)
       @id = primary_key
-      @index = index
       @first_name = first_name.downcase.capitalize
       @last_name = last_name.downcase.capitalize
     end
@@ -63,7 +62,7 @@ module Tact
     def phone_numbers
       number_hashes = @@db.execute("select * from phone_numbers where contact_id = ? order by type asc;", [@id])
       phone_numbers = number_hashes.each_with_index.map do |n_hash, index| 
-        PhoneNumber.from_hash(n_hash, index + 1)
+        PhoneNumber.from_hash(n_hash)
       end
       phone_numbers
     end
@@ -71,7 +70,7 @@ module Tact
     def emails
       email_hashes = @@db.execute("select * from emails where contact_id = ?", [@id])
       emails = email_hashes.each_with_index.map do |e_hash, index| 
-        Email.from_hash(e_hash, index + 1)
+        Email.from_hash(e_hash)
       end
       emails
     end
@@ -81,8 +80,7 @@ module Tact
     end
 
     def to_s
-      string = ""
-      string += "[#{index}]".red + " #{full_name}\n".green.bold
+      "#{full_name}\n".green.bold
     end
   end
 end
