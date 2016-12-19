@@ -27,14 +27,17 @@ module Tact
       return chars.join
     end
 
-    def self.from_hash(hash)
-      number = self.new(hash["type"], hash["number"], hash["contact_id"], hash["id"])
-      return number
+    def self.from_hash(hash, index=nil)
+      self.new(hash["type"], hash["number"], hash["contact_id"], hash["id"], index)
     end
 
     def self.all
       number_hashes = @@db.execute("select * from phone_numbers;")
       number_hashes.map {|n_hash| self.from_hash(n_hash) }
+    end
+
+    def self.delete(id)
+      @@db.execute("delete from phone_numbers where id = ?;", [id])
     end
 
     def self.find_by_id(id)
@@ -46,11 +49,11 @@ module Tact
       number_hashes = @@db.execute("select * from phone_numbers where number = ?", [number])
     end
     
-    def initialize(type, number, contact_id, primary_key=nil)
+    def initialize(type, number, contact_id, primary_key=nil, index=nil)
       @id = primary_key
-      @index = nil
-      @type = type
-      @number = number
+      @index = index
+      @type = type.downcase.capitalize
+      @number = number.gsub(/\D/, "")
       @contact_id = contact_id
     end
 

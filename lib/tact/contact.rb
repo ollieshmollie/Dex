@@ -9,13 +9,13 @@ module Tact
 
     @@db = Database.new.db
 
-    def self.from_hash(hash)
-      contact = self.new(hash["first_name"], hash["last_name"], hash["id"])
+    def self.from_hash(hash, index=nil)
+      contact = self.new(hash["first_name"], hash["last_name"], index, hash["id"])
     end
 
     def self.all
-      contact_hashes = @@db.execute("select * from contacts;")
-      contact_hashes.map {|c_hash| self.from_hash(c_hash) }
+      contact_hashes = @@db.execute("select * from contacts order by last_name asc, first_name asc;")
+      contact_hashes.each_with_index.map {|c_hash, index| self.from_hash(c_hash, index + 1) }
     end
 
     def self.find_by_id(id)
@@ -33,12 +33,12 @@ module Tact
     end
 
     def self.delete(id)
-      @@db.execute("delete from contacts where id = ?;", [id]) ? true : false 
+      @@db.execute("delete from contacts where id = ?;", [id])
     end
 
-    def initialize(first_name, last_name, primary_key=nil)
+    def initialize(first_name, last_name, primary_key=nil, index=nil)
       @id = primary_key
-      @index = nil
+      @index = index
       @first_name = first_name.downcase.capitalize
       @last_name = last_name.downcase.capitalize
     end
@@ -56,13 +56,19 @@ module Tact
     end
 
     def phone_numbers
-      number_hashes = @@db.execute("select * from phone_numbers where contact_id = ?", [@id])
-      number_hashes.map {|n_hash| PhoneNumber.from_hash(n_hash) }
+      number_hashes = @@db.execute("select * from phone_numbers where contact_id = ? order by type asc;", [@id])
+      phone_numbers = number_hashes.each_with_index.map do |n_hash, index| 
+        PhoneNumber.from_hash(n_hash, index + 1)
+      end
+      phone_numbers
     end
 
     def emails
       email_hashes = @@db.execute("select * from emails where contact_id = ?", [@id])
-      email_hashes.map {|e_hash| Email.from_hash(e_hash) }
+      emails = email_hashes.each_with_index.map do |e_hash, index| 
+        Email.from_hash(e_hash, index + 1)
+      end
+      emails
     end
 
     def full_name
@@ -70,12 +76,8 @@ module Tact
     end
 
     def to_s
-      string = "=" * 40 + "\n"
+      string = ""
       string += "[#{index}]".red + " #{full_name}\n".green.bold
-      phone_numbers.each {|number| string += "\s\s" + number.to_s + "\n"}
-      emails.each {|address| string += "\s\s\s\s" + address.to_s + "\n"}
-      string += "=" * 40 + "\n"
-      return string
     end
   end
 end
