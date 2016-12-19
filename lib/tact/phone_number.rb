@@ -1,9 +1,9 @@
 require 'colored'
+require_relative 'database'
 
 module Tact
   class PhoneNumber
-    include Comparable
-    attr_reader :primary_key
+    attr_reader :id
     attr_accessor :number, :index, :type
 
     def self.format_number(number)
@@ -26,19 +26,21 @@ module Tact
     end
 
     def self.from_hash(hash)
-      number = self.new(hash["type"], hash["number"], hash["id"])
+      number = self.new(hash["type"], hash["number"], hash["contact_id"], hash["id"])
       return number
     end
-
-    def <=>(another_number)
-      type <=> another_number.type
-    end
     
-    def initialize(type, number, primary_key)
+    def initialize(type, number, contact_id, primary_key=nil)
+      @db = Database.new.db
+      @id = primary_key
       @index = nil
       @type = type
       @number = number
-      @primary_key = primary_key
+      @contact_id = contact_id
+    end
+
+    def save
+      @db.execute("INSERT INTO phone_numbers (type, number, contact_id) values (?, ?, ?);", [@type, @number, @contact_id]) ? true : false
     end
 
     def to_s

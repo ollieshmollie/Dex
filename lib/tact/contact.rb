@@ -1,29 +1,35 @@
-require_relative "phone_number.rb"
-require_relative "email.rb"
 require 'colored'
+require_relative 'phone_number'
+require_relative "email"
 
 module Tact
   class Contact
-    include Comparable
-    attr_reader :primary_key, :phone_numbers, :emails, :first_name, :last_name
+    attr_reader :id, :phone_numbers, :emails, :first_name, :last_name
     attr_accessor :index
 
-    def <=>(another_contact)
-      full_name <=> another_contact.full_name
-    end
-
-    def initialize(first_name, last_name, primary_key)
-      @index = nil
-      @first_name = first_name
-      @last_name = last_name
-      @primary_key = primary_key
-      @phone_numbers = []
-      @emails = []
-    end
+    @@db = Database.new.db
 
     def self.from_hash(hash)
       contact = self.new(hash["first_name"], hash["last_name"], hash["id"])
       return contact
+    end
+
+    def self.all
+      contact_hashes = @@db.execute("select * from contacts;")
+      contact_hashes.map {|c_hash| self.from_hash(c_hash) }
+    end
+
+    def initialize(first_name, last_name, primary_key=nil)
+      @id = primary_key
+      @index = nil
+      @first_name = first_name.downcase.capitalize
+      @last_name = last_name.downcase.capitalize
+      @phone_numbers = []
+      @emails = []
+    end
+
+    def save
+      self.class.db.execute("insert into contacts (first_name, last_name) values (?, ?);", [@first_name, @last_name]) ? true : false
     end
 
     def full_name
