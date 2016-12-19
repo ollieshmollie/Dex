@@ -4,7 +4,8 @@ require_relative "email"
 
 module Tact
   class Contact
-    attr_accessor :index, :first_name, :last_name, :id
+    attr_reader :id
+    attr_accessor :index, :first_name, :last_name
 
     @@db = Database.new.db
 
