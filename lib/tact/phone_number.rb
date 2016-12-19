@@ -6,6 +6,8 @@ module Tact
     attr_reader :id
     attr_accessor :number, :index, :type
 
+    @@db = Database.new.db
+
     def self.format_number(number)
       n = number.gsub(/[^\d]/, "")
       chars = n.chars
@@ -29,9 +31,22 @@ module Tact
       number = self.new(hash["type"], hash["number"], hash["contact_id"], hash["id"])
       return number
     end
+
+    def self.all
+      number_hashes = @@db.execute("select * from phone_numbers;")
+      number_hashes.map {|n_hash| self.from_hash(n_hash) }
+    end
+
+    def self.find_by_id(id)
+      number_hashes = @@db.execute("select * from phone_numbers where id = ?", [id])
+      self.from_hash(number_hashes[0]) if !number_hashes.empty?
+    end
+
+    def self.find_by_number(number)
+      number_hashes = @@db.execute("select * from phone_numbers where number = ?", [number])
+    end
     
     def initialize(type, number, contact_id, primary_key=nil)
-      @db = Database.new.db
       @id = primary_key
       @index = nil
       @type = type
@@ -40,7 +55,11 @@ module Tact
     end
 
     def save
-      @db.execute("INSERT INTO phone_numbers (type, number, contact_id) values (?, ?, ?);", [@type, @number, @contact_id]) ? true : false
+      if @id == nil
+        @@db.execute("INSERT INTO phone_numbers (type, number, contact_id) values (?, ?, ?);", [@type, @number, @contact_id]) ? true : false
+      else
+        @@db.execute("update phone_numbers set type = ?, number = ?, contact_id = ? where id = ?;", [@type, @number, @contact_id]) ? true : false
+      end
     end
 
     def to_s

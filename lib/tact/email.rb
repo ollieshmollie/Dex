@@ -5,6 +5,8 @@ module Tact
     attr_reader :id
     attr_accessor :address, :index
 
+    @@db = Database.new.db
+
     def self.from_hash(hash)
       address = self.new(hash["address"], hash["contact_id"], hash["id"])
       return address
@@ -15,11 +17,14 @@ module Tact
       @index = nil
       @address = address
       @contact_id = contact_id
-      @db = Database.new
     end
 
     def save(contact_id)
-      @db.execute("insert into emails (address, contact_id) values (?, ?);", [@address, @contact_id]) ? true : false
+      if @id == nil
+        @@db.execute("insert into emails (address, contact_id) values (?, ?);", [@address, @contact_id]) ? true : false
+      else
+        @@db.execute("update emails set address = ?, contact_id = ? where id = ?;", [@address, @contact_id]) ? true : false
+      end
     end
 
     def to_s

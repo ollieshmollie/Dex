@@ -1,43 +1,14 @@
 require 'sqlite3'
 require 'colored'
-require_relative 'contact'
+require_relative 'card'
 require_relative 'database'
 
 module Tact
   class Rolodex
-    attr_reader :contacts, :db_path
     
     def initialize
-      @contacts = load
+      @cards = Contact.all.map {|contact| Card.new(contact) }
       @db = Database.new
-    end
-
-    def load
-      contacts = []
-      contact_index = 1
-      @db.execute("select * from contacts order by last_name asc, first_name asc;") do |contact_hash|
-        contact = Contact.from_hash(contact_hash)
-        contact.index = contact_index
-        num_index = 1
-        @db.execute("select * from phone_numbers where contact_id = #{contact_hash["id"]} order by type asc;") do |phone_number_hash|
-          number = PhoneNumber.from_hash(phone_number_hash)
-          number.index = num_index
-          contact.phone_numbers << number
-          num_index += 1
-        end
-        email_index = 1
-        @db.execute ("select * from emails where contact_id = #{contact_hash["id"]} order by address asc;") do |email_hash|
-          email = Email.from_hash(email_hash)
-          email.index = email_index
-          contact.emails << email
-          email_index += 1
-        end
-        contacts << contact
-        contact_index += 1
-        num_index = 1
-        email_index = 1
-      end
-      return contacts
     end
 
     def add_contact(first_name, last_name)
@@ -170,8 +141,8 @@ module Tact
 
     def to_s
       string = ""
-      @contacts.each {|contact| string += contact.to_s}
-      return string
+      @cards.each {|card| string += card.to_s}
+      string
     end
   end
 end
