@@ -10,7 +10,7 @@ module Tact
     @@db = Database.new.db
 
     def self.from_hash(hash, index=nil)
-      contact = self.new(hash["first_name"], hash["last_name"], index, hash["id"])
+      contact = self.new(hash["first_name"], hash["last_name"], hash["id"], index)
     end
 
     def self.all

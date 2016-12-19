@@ -73,7 +73,7 @@ module Tact
     def find_contact(contact_index)
       begin 
         @cards[contact_index - 1].contact
-      rescue NoMethodError 
+      rescue 
         puts "Error: Contact index out of range".red
         exit
       end
@@ -81,19 +81,21 @@ module Tact
 
     def find_phone_number(contact_index, num_index)
       contact = find_contact(contact_index)
-      begin
-        contact.phone_numbers[num_index - 1]
-      rescue NoMethodError
+      phone_number = contact.phone_numbers[num_index - 1]
+      if phone_number then phone_number
+      else 
         puts "Error: Phone number index out of range".red
+        exit
       end
     end
 
     def find_email(contact_index, email_index)
       contact = find_contact(contact_index)
-      begin 
-        contact.emails[email_index - 1]
-      rescue NoMethodError
+      email = contact.emails[email_index - 1]
+      if email then email
+      else
         puts "Error: Email index out of range".red
+        exit
       end
     end
 
