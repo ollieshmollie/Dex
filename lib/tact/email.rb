@@ -11,13 +11,27 @@ module Tact
       self.new(hash["address"], hash["contact_id"], hash["id"])
     end
 
+    def self.all
+      email_hashes = @@db.execute("select * from emails;")
+      email_hashes.map {|e_hash| Email.from_hash(e_hash) }
+    end
+
+    def self.find_by_id(id)
+      email_hashes = @@db.execute("select * from emails where id = ?", [id])
+      self.from_hash(email_hashes[0]) if !email_hashes.empty?
+    end
+
+    def self.find_by_address(address)
+      email_hashes = @@db.execute("select * from emails where address = ?", [address])
+      email_hashes.map {|e_hash| self.from_hash(e_hash) }
+    end
+
     def self.delete(id)
       @@db.execute("delete from emails where id = ?;", [id])
     end
 
     def initialize(address, contact_id, primary_key=nil)
       @id = primary_key
-      @index = index
       @address = address
       @contact_id = contact_id
     end
@@ -31,7 +45,7 @@ module Tact
           false
         end
       else
-        @@db.execute("update emails set address = ?, contact_id = ? where id = ?;", [@address, @contact_id]) ? self : false
+        @@db.execute("update emails set address = ?, contact_id = ? where id = ?;", [@address, @contact_id, @id]) ? self : false
       end
     end
 

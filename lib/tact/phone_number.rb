@@ -47,6 +47,7 @@ module Tact
 
     def self.find_by_number(number)
       number_hashes = @@db.execute("select * from phone_numbers where number = ?", [number])
+      number_hashes.map {|n_hash| self.from_hash(n_hash) }
     end
     
     def initialize(type, number, contact_id, primary_key=nil)

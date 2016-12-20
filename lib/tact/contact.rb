@@ -61,18 +61,12 @@ module Tact
 
     def phone_numbers
       number_hashes = @@db.execute("select * from phone_numbers where contact_id = ? order by type asc;", [@id])
-      phone_numbers = number_hashes.each_with_index.map do |n_hash, index| 
-        PhoneNumber.from_hash(n_hash)
-      end
-      phone_numbers
+      number_hashes.map {|n_hash| PhoneNumber.from_hash(n_hash) }
     end
 
     def emails
       email_hashes = @@db.execute("select * from emails where contact_id = ?", [@id])
-      emails = email_hashes.each_with_index.map do |e_hash, index| 
-        Email.from_hash(e_hash)
-      end
-      emails
+      email_hashes.map {|e_hash| Email.from_hash(e_hash) }
     end
 
     def full_name
