@@ -28,6 +28,7 @@ module Tact
 
     def self.delete(id)
       @@db.execute("delete from emails where id = ?;", [id])
+      @@db.execute("select changes();")[0]["changes()"] == 1 ? true : false
     end
 
     def initialize(address, contact_id, primary_key=nil)

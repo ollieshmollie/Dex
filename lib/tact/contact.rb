@@ -35,6 +35,7 @@ module Tact
 
     def self.delete(id)
       @@db.execute("delete from contacts where id = ?;", [id])
+      @@db.execute("select changes();")[0]["changes()"] == 1 ? true : false
     end
 
     def initialize(first_name, last_name, primary_key=nil)

@@ -38,6 +38,7 @@ module Tact
 
     def self.delete(id)
       @@db.execute("delete from phone_numbers where id = ?;", [id])
+      @@db.execute("select changes();")[0]["changes()"] == 1 ? true : false
     end
 
     def self.find_by_id(id)
