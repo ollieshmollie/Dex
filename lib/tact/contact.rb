@@ -25,15 +25,16 @@ module Tact
 
     def self.find_by_first_name(first_name)
       results = @@db.execute("select * from contacts where upper(first_name) = upper(?);", [first_name])
-      results.map {|c_hash| Contact.from_hash(c_hash) }
+      results.map {|c_hash| self.from_hash(c_hash) }
     end
 
     def self.find_by_last_name(last_name)
       results = @@db.execute("select * from contacts where upper(last_name) = upper(?);", [last_name])
+      results.map {|c_hash| self.from_hash(c_hash) }
     end
 
     def self.delete(id)
-      @@db.execute("delete from contacts where id = ?;", [id]) ? true : false
+      @@db.execute("delete from contacts where id = ?;", [id])
     end
 
     def initialize(first_name, last_name, primary_key=nil)
