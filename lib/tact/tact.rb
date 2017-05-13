@@ -1,4 +1,5 @@
 require_relative "rolodex.rb"
+require_relative "google_client.rb"
 require 'optparse'
 require 'tact/version'
 require 'colored'
