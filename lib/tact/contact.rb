@@ -5,12 +5,16 @@ require_relative "email"
 module Tact
   class Contact
     attr_reader :id
-    attr_accessor :index, :first_name, :last_name
+    attr_accessor :index, :first_name, :last_name, :google_id
 
     @@db = Database.new.db
 
+    def self.create(params)
+      self.new(params).save
+    end
+
     def self.from_hash(hash)
-      contact = self.new(hash["first_name"], hash["last_name"], hash["id"])
+      self.new(hash["first_name"], hash["last_name"], hash["id"])
     end
 
     def self.all
@@ -38,12 +42,13 @@ module Tact
       @@db.execute("select changes();")[0]["changes()"] == 1 ? true : false
     end
 
-    def initialize(first_name, last_name, primary_key=nil)
-      @id = primary_key
-      @first_name = first_name.downcase.capitalize
-      @last_name = last_name.downcase.capitalize
+    def initialize(params)
+      @google_id = params[:google_id]
+      @id = params[:primary_key]
+      @first_name = params[:first_name].downcase.capitalize
+      @last_name = params[:last_name].downcase.capitalize
     end
-
+    
     def save
       begin
         if @id == nil

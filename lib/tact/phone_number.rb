@@ -51,11 +51,11 @@ module Tact
       number_hashes.map {|n_hash| self.from_hash(n_hash) }
     end
     
-    def initialize(type, number, contact_id, primary_key=nil)
-      @id = primary_key
-      @type = type.downcase.capitalize
-      @number = number.gsub(/\D/, "")
-      @contact_id = contact_id
+    def initialize(params)
+      @id = params[:primary_key]
+      @type = params[:type].downcase.capitalize
+      @number = params[:number].gsub(/\D/, "")
+      @contact_id = params[:contact_id]
     end
 
     def save
