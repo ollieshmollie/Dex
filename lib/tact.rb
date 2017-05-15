@@ -1,1 +1,1 @@
-require 'tact/tact'
+require 'tact/environment'

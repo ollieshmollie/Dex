@@ -1,72 +1,72 @@
-require 'sqlite3'
-require 'colored'
-require_relative 'card'
-require_relative 'database'
-
 module Tact
   class Rolodex
     
     def initialize
       @cards = load_cards
-      @db = Database.new.db
     end
 
     def load_cards
-      cards = Contact.all.each_with_index.map do |contact, index|
+      cards = Contact.all.order(last_name: :asc, first_name: :asc).each_with_index.map do |contact, index|
         Card.new(contact, index + 1)
       end
       cards
     end
 
     def add_contact(first_name, last_name)
-      Contact.new(first_name, last_name).save
+      Contact.create(
+        first_name: first_name,
+        last_name: last_name
+      )
     end
 
     def add_phone_number(contact_index, type, number)
       contact = find_contact(contact_index)
-      PhoneNumber.new(type, number, contact.id).save
+      PhoneNumber.create(
+        type: type,
+        number: number,
+        contact: contact
+      )
     end
 
     def add_email(contact_index, address)
       contact = find_contact(contact_index)
-      Email.new(address, contact.id).save
+      Email.new(
+        address: address, 
+        contact: contact
+      )
     end
 
     def delete_contact(contact_index)
-      contact = find_contact(contact_index)
-      Contact.delete(contact.id)
+      find_contact(contact_index).destroy
     end
 
     def delete_phone_number(contact_index, num_index)
-      phone_number = find_phone_number(contact_index, num_index)
-      PhoneNumber.delete(phone_number.id)
+      find_phone_number(contact_index, num_index).destroy
     end
 
     def delete_email(contact_index, email_index)
-      email = find_email(contact_index, email_index)
-      Email.delete(email.id)
+      find_email(contact_index, email_index).destroy
     end
 
     def edit_contact_name(contact_index, new_first_name, new_last_name)
       contact = find_contact(contact_index)
-      contact.first_name = new_first_name.downcase.capitalize
-      contact.last_name = new_last_name.downcase.capitalize
-      contact.save
+      contact.update_attributes(
+        first_name: new_first_name,
+        last_name: new_last_name
+      )
     end
 
     def edit_phone_number(contact_index, num_index, new_type, new_number)
-      new_type = new_type.downcase.capitalize
-      new_number = new_number.gsub(/\D/, "")
       phone_number = find_phone_number(contact_index, num_index)
-      phone_number.type = new_type
-      phone_number.number = new_number
-      phone_number.save
+      phone_number.update_attributes(
+        type: new_type,
+        number: new_number
+      )
     end
 
     def edit_email(contact_index, email_index, new_address)
       email = find_email(contact_index, email_index)
-      email.address = new_address
-      email.save
+      email.update_attributes(address: new_address)
     end
 
     def find_contact(contact_index)
@@ -118,6 +118,10 @@ module Tact
     def convert_to_card(contact_id)
       results = @cards.select {|card| card.contact.id == contact_id }
       results[0]
+    end
+
+    def length
+      @cards.count
     end
 
     def to_s
