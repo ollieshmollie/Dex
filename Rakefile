@@ -66,7 +66,7 @@ namespace :db do
   end
 end
 
-desc "Run specs"
+desc "Run specs in test environment"
 task :spec => :environment do
   sh 'rspec'
 end

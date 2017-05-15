@@ -30,4 +30,15 @@ RSpec.describe Tact::Contact do
       expect(contact.emails).to respond_to(:count)
     end
   end
+
+  describe 'database operations' do
+    
+    before(:each) do
+      contact.save
+    end
+
+    it "capitalizes all letters in name" do
+      expect(contact.full_name).to eq 'TESTY MCTESTERTON'
+    end
+  end
 end

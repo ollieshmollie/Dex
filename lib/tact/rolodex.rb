@@ -120,6 +120,10 @@ module Tact
       results[0]
     end
 
+    def length
+      @cards.count
+    end
+
     def to_s
       string = ""
       @cards.each {|card| string += card.to_s}
