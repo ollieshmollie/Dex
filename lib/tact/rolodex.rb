@@ -6,7 +6,7 @@ module Tact
     end
 
     def load_cards
-      cards = Contact.all.each_with_index.map do |contact, index|
+      cards = Contact.all.order(last_name: :asc, first_name: :asc).each_with_index.map do |contact, index|
         Card.new(contact, index + 1)
       end
       cards
