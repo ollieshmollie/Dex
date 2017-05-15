@@ -1,5 +1,3 @@
-require_relative 'contact'
-
 module Tact
   class Card
     attr_reader :contact

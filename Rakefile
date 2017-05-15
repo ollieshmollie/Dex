@@ -1,11 +1,13 @@
 require 'bundler/gem_tasks'
 require 'fileutils'
 
-require_relative 'environment.rb'
+task :environment do
+  require 'tact/environment'
+end
 
 namespace :generate do
   desc "Create an empty migration in db/migrate, e.g., rake generate:migration NAME=create_tasks"
-  task :migration do
+  task :migration => :environment do
     unless ENV.has_key?('NAME')
       raise "Must specificy migration name, e.g., rake generate:migration NAME=create_tasks"
     end
@@ -32,19 +34,19 @@ end
 
 namespace :db do
   desc "Create databases"
-  task :create do
+  task :create => :environment do
     SQLite3::Database.new(DEV_DB)
     SQLite3::Database.new(TEST_DB)
   end
 
   desc "Drop databases"
-  task :drop do
+  task :drop => :environment do
     FileUtils.rm DEV_DB
     FileUtils.rm TEST_DB
   end
 
   desc "Run migrations"
-  task :migrate do
+  task :migrate => :environment do
     ActiveRecord::Migrator.migrations_paths << File.dirname(__FILE__) + 'db/migrate'
     ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
     ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths, ENV["VERSION"] ? ENV["VERSION"].to_i : nil) do |migration|
@@ -53,7 +55,7 @@ namespace :db do
   end
 
   desc 'Rolls the schema back to the previous version (specify steps w/ STEP=n).'
-  task :rollback do
+  task :rollback => :environment do
     step = ENV['STEP'] ? ENV['STEP'].to_i : 1
     ActiveRecord::Migrator.rollback MIGRATIONS_DIR, step
   end
@@ -65,8 +67,8 @@ namespace :db do
 end
 
 desc "Run specs"
-task :spec do
-  rspec
+task :spec => :environment do
+  sh 'rspec'
 end
 
 desc "Open console with this library required"

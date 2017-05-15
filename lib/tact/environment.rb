@@ -4,7 +4,7 @@ require 'sqlite3'
 require 'colored'
 
 # recursively requires all files in ./lib and down that end in .rb
-Dir.glob('./lib/tact').each do |file|
+Dir['./lib/tact/*.rb'].each do |file|
   require file
 end
 

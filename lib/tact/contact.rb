@@ -4,8 +4,8 @@ module Tact
     has_many :emails, dependent: :destroy
 
     before_save do
-      first_name = first_name.upcase
-      last_name = last_name.upcase
+      first_name.upcase!
+      last_name.upcase!
     end
 
     def full_name

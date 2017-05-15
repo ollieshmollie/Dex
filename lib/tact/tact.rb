@@ -1,8 +1,3 @@
-require_relative "rolodex.rb"
-require 'optparse'
-require 'tact/version'
-require 'colored'
-
 module Tact
   class Tact
     def initialize(args)
