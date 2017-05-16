@@ -1,6 +1,8 @@
-require 'tact/environment'
+require 'tact'
 require 'rspec'
 require 'database_cleaner'
+
+require_relative 'fixtures/contact_info'
 
 RSpec.configure do |config|
 

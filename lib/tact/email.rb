@@ -3,7 +3,7 @@ module Tact
     belongs_to :contact
 
     def to_s
-      "<#{@address}>"
+      "<#{address}>"
     end
 
   end

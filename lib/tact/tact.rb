@@ -1,3 +1,5 @@
+require 'optparse'
+
 module Tact
   class Tact
     def initialize(args)
@@ -15,11 +17,14 @@ module Tact
           opt.on('-d', '--delete', 'Delete entry') do
             @options[:delete] = true
           end
-          opt.on('-p', '--phone', 'Edit phone number') do
+          opt.on('-p', '--phone', 'Phone number') do
             @options[:number] = true
           end
-          opt.on('-e', '--email', 'Edit email') do
+          opt.on('-e', '--email', 'Email') do
             @options[:email] = true
+          end
+          opt.on('-s', '--sync', 'Sync Google contacts') do
+            @options[:sync] = true
           end
           opt.on("-v", "--version", "Version") do 
             @options[:version] = true
@@ -112,7 +117,14 @@ module Tact
           new_address = @args[2]
           @dex.edit_email(contact_index, email_index, new_address)
         end
-        
+
+      elsif @options[:sync]
+        puts "Syncing Google contacts..." 
+        GoogleContacts::Entry.all.each do |entry|
+          syncer = GoogleContacts::Syncer.new(entry)
+          syncer.sync
+        end
+
       elsif @options[:help]
         puts help_message
       elsif @options[:version]

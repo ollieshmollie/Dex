@@ -2,15 +2,70 @@ require 'json'
 
 module Tact
   module GoogleContacts
+    class Syncer
+
+      def initialize(entry)
+        @entry = entry
+        @new_numbers = []
+        @new_emails = []
+      end
+
+      def sync
+        contact = find_contact || Contact.new(
+          first_name: entry.first_name.upcase,
+          last_name: entry.last_name.upcase
+        )
+        merge_properties(contact)
+        contact.save
+      end
+
+      def find_contact
+        Contact.find_by(
+          first_name: entry.first_name.upcase,
+          last_name: entry.last_name.upcase
+        )
+      end
+
+      def merge_properties(contact)
+        get_new_phone_numbers(contact)
+        get_new_emails(contact)
+        add_new_phone_numbers(contact)
+        add_new_emails(contact)
+      end
+
+      def add_new_phone_numbers(contact)
+        contact.phone_numbers << new_numbers
+      end
+
+      def add_new_emails(contact)
+        contact.emails << new_emails
+      end
+
+      def get_new_phone_numbers(contact)
+        entry.phone_numbers.each do |number|
+          if !contact.phone_numbers.include?(number)
+            new_numbers << number
+          end
+        end
+      end
+
+      def get_new_emails(contact)
+        entry.emails.each do |email|
+          if !contact.emails.include?(email)
+            new_emails << email
+          end
+        end
+      end
+
+      private
+        attr_reader :entry, :new_numbers, :new_emails
+
+    end
 
     class Entry
       attr_reader :info
 
       def self.all
-        collection
-      end
-
-      def self.pure_contacts
         collection.select { |c| c.pure_contact? }
       end
 
@@ -22,55 +77,40 @@ module Tact
         !!info[:"gContact$groupMembershipInfo"]
       end
 
-      def to_contact
+      def phone_numbers
+        info[:"gd$phoneNumber"].map do |num|
+          PhoneNumber.new(
+            kind: num[:label],
+            number: num[:$t]
+          )
+        end
       end
 
-      private
-        
-        def build_contact
-          Contact.new({
-          first_name: first_name,
-          last_name: last_name,
-          google_id: google_id
-        })
+      def emails
+        info[:"gd$email"].map do |e|
+          Email.new(address: e[:address])
         end
-
-        def phone_numbers
-          info[:"gd$phoneNumber"]
-        end
-
-        def google_id
-          info[:id][:$t]
-        end
-
-        def first_name
-          info[:"gd$name"][:"gd$givenName"][:$t]
-        end
-
-        def last_name
-          info[:"gd$name"][:"gd$familyName"][:$t]
-        end
-        
-        def self.collection
-          @@collection ||= Fetcher.fetch.reduce(EntriesCollection.new) do |collection, info|
-            collection << new(info)
-          end
-        end
-        
-        private_class_method :collection
-    end
-
-    class EntryPhoneNumber
-      def initialize(entry)
-        @entry = entry
       end
 
-      def build_phone_number
-        PhoneNumber.new({
-          type: type,
-          number: number 
-        }) 
-      end 
+      def google_id
+        info[:id][:$t]
+      end
+
+      def first_name
+        info[:"gd$name"][:"gd$givenName"][:$t]
+      end
+
+      def last_name
+        info[:"gd$name"][:"gd$familyName"][:$t]
+      end
+      
+      def self.collection
+        @@collection ||= Fetcher.fetch.reduce(EntriesCollection.new) do |collection, info|
+          collection << new(info)
+        end
+      end
+      
+      private_class_method :collection
     end
 
     class EntriesCollection

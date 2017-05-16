@@ -13,16 +13,20 @@ module Tact
     end
 
     def add_contact(first_name, last_name)
-      Contact.create(
-        first_name: first_name,
-        last_name: last_name
-      )
+      begin
+        Contact.create!(
+          first_name: first_name,
+          last_name: last_name
+        )
+      rescue
+        puts 'Error: Contact already exists'.red
+      end
     end
 
-    def add_phone_number(contact_index, type, number)
+    def add_phone_number(contact_index, kind, number)
       contact = find_contact(contact_index)
       PhoneNumber.create(
-        type: type,
+        kind: kind,
         number: number,
         contact: contact
       )
@@ -30,7 +34,7 @@ module Tact
 
     def add_email(contact_index, address)
       contact = find_contact(contact_index)
-      Email.new(
+      Email.create(
         address: address, 
         contact: contact
       )
