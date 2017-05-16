@@ -4,15 +4,15 @@ require 'sqlite3'
 require 'colored'
 
 # require lib files
-require 'authorizable'
-require 'card'
-require 'contact'
-require 'email'
-require 'google_client'
-require 'phone_number'
-require 'rolodex'
-require 'tact'
-require 'version'
+require_relative 'authorizable'
+require_relative 'card'
+require_relative 'contact'
+require_relative 'email'
+require_relative 'google_client'
+require_relative 'phone_number'
+require_relative 'rolodex'
+require_relative 'tact'
+require_relative 'version'
 
 
 APP_ROOT ||= File.join(File.dirname(__FILE__), '../')
