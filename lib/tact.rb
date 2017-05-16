@@ -4,15 +4,15 @@ require 'sqlite3'
 require 'colored'
 
 # require lib files
-require_relative 'authorizable.rb'
-require_relative 'card.rb'
-require_relative 'contact.rb'
-require_relative 'email.rb'
-require_relative 'google_client.rb'
-require_relative 'phone_number.rb'
-require_relative 'rolodex.rb'
-require_relative 'tact.rb'
-require_relative 'version.rb'
+require 'tact/authorizable'
+require 'tact/card'
+require 'tact/contact'
+require 'tact/email'
+require 'tact/google_client'
+require 'tact/phone_number'
+require 'tact/rolodex'
+require 'tact/tact'
+require 'tact/version'
 
 
 APP_ROOT ||= File.join(File.dirname(__FILE__), '../')
