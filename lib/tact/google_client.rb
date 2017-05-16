@@ -127,14 +127,14 @@ module Tact
       end
 
       def each
-        contacts.each { |c| yield(c) }  
+        @entries.each { |c| yield(c) }  
       end
     end
 
     class Fetcher
 
       def self.info_list
-        JSON.parse(json, symbolize_names: true)[:connections][0]
+        JSON.parse(json, symbolize_names: true)[:connections]
       end
 
       def self.json

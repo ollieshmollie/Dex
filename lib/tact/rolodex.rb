@@ -111,13 +111,17 @@ module Tact
     end
 
     def find_by_number(param)
-      contact_ids = @db.execute("select distinct contact_id from phone_numbers where number like '%#{param}%';")
-      contact_ids.map {|hash| convert_to_card(hash["contact_id"]) } 
+      phone_numbers = PhoneNumber.includes(:contact).where('number LIKE ?', "%#{param}%")
+      phone_numbers.map do |phone_number|
+        convert_to_card(phone_number.contact.id)
+      end
     end
 
     def find_by_email(param)
-      contact_ids = @db.execute("select distinct contact_id from emails where address like '%#{param}%';")
-      contact_ids.map {|hash| convert_to_card(hash["contact_id"]) }
+      emails = Email.includes(:contact).where('address LIKE ?', "%#{param}%")
+      emails.map do |email|
+        convert_to_card(email.contact.id)
+      end
     end
 
     def convert_to_card(contact_id)
