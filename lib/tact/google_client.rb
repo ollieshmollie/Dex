@@ -43,7 +43,7 @@ module Tact
 
       def get_new_phone_numbers(contact)
         entry.phone_numbers.each do |number|
-          if !contact.phone_numbers.include?(number)
+          if !contact.phone_numbers.any? { |n| n.number == number.number }
             new_numbers << number
           end
         end
@@ -51,7 +51,7 @@ module Tact
 
       def get_new_emails(contact)
         entry.emails.each do |email|
-          if !contact.emails.include?(email)
+          if !contact.emails.any? { |e| e.address == email.address }
             new_emails << email
           end
         end

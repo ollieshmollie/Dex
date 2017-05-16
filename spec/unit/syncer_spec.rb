@@ -22,10 +22,25 @@ RSpec.describe Tact::GoogleContacts::Syncer do
       expect(number.kind).to eq 'Cell'
     end
 
+    it 'does not add repeat numbers' do
+      contact.phone_numbers << Tact::PhoneNumber.new(
+        number: '1234567890',
+        kind: 'Cell'
+      )
+      contact.save
+      expect { syncer.sync }.not_to change(Tact::PhoneNumber, :count)
+    end
+
     it 'adds emails from google to contact' do
       syncer.sync
       email = contact.emails.first
       expect(email.address).to eq 'test@test.com'
+    end
+
+    it 'does not add repeat emails' do
+      contact.emails << Tact::Email.new(address: 'test@test.com')
+      contact.save
+      expect { syncer.sync }.not_to change(Tact::Email, :count)
     end
   end
 
@@ -36,7 +51,7 @@ RSpec.describe Tact::GoogleContacts::Syncer do
     end
 
     it 'creates a new contact' do
-      expect{ syncer.sync }.to change(Tact::Contact, :count).by 1
+      expect { syncer.sync }.to change(Tact::Contact, :count).by 1
       contact = Tact::Contact.first
       expect(contact.full_name).to eq 'TESTY MCTESTERTON'
       expect(contact.phone_numbers.first.number).to eq '(123) 456-7890'
