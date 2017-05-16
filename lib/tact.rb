@@ -8,6 +8,7 @@ Dir['./lib/tact/*.rb'].each do |file|
   require file
 end
 
+APP_ROOT ||= File.join(File.dirname(__FILE__), '../')
 DEV_DB ||= File.join(File.expand_path('~'), '.tact', 'tact.sqlite3')
 TEST_DB ||= File.join(File.expand_path('~'), '.tact', 'tact_test.sqlite3')
 MIGRATIONS_DIR ||= 'db/migrate'

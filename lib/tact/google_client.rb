@@ -66,46 +66,48 @@ module Tact
       attr_reader :info
 
       def self.all
-        collection.select { |c| c.pure_contact? }
+        collection
       end
 
       def initialize(info)
         @info = info
       end
 
-      def pure_contact?
-        !!info[:"gContact$groupMembershipInfo"]
-      end
-
-      def phone_numbers
-        info[:"gd$phoneNumber"].map do |num|
-          PhoneNumber.new(
-            kind: num[:label],
-            number: num[:$t]
-          )
-        end if info[:"gd$phoneNumber"]
-      end
-
-      def emails
-        info[:"gd$email"].map do |e|
-          Email.new(address: e[:address])
-        end if info[:"gd$email"]
-      end
-
-      def google_id
-        info[:id][:$t]
-      end
-
       def first_name
-        info[:"gd$name"][:"gd$givenName"][:$t]
+        names[:givenName]
       end
 
       def last_name
-        info[:"gd$name"][:"gd$familyName"][:$t]
+        names[:familyName]
       end
-      
+
+      def phone_numbers
+        if info[:phoneNumbers]
+          info[:phoneNumbers].map do |phone_number|
+            PhoneNumber.new(
+              number: phone_number[:value],
+              kind: phone_number[:type]
+            )
+          end
+        end
+      end
+
+      def emails
+        if info[:emailAddresses]
+          info[:emailAddresses].map do |email_address|
+            Email.new(address: email_address[:value])
+          end 
+        end
+      end
+
+      private
+
+        def names
+          info[:names][0]
+        end
+
       def self.collection
-        @@collection ||= Fetcher.fetch.reduce(EntriesCollection.new) do |collection, info|
+        @@collection ||= Fetcher.info_list.reduce(EntriesCollection.new) do |collection, info|
           collection << new(info)
         end
       end
@@ -131,14 +133,14 @@ module Tact
 
     class Fetcher
 
-      def self.fetch
-        json = `curl -H "$(oauth2l header --json client_secret.json https://www.google.com/m8/feeds/)"\
-         -H "GData-Version: 3.0" https://www.google.com/m8/feeds/contacts/default/full?alt=json`
-        info_list = JSON.parse(json, symbolize_names: true)
-        info_list[:feed][:entry]
+      def self.info_list
+        JSON.parse(json, symbolize_names: true)[:connections][0]
+      end
+
+      def self.json
+        `curl -H "$(oauth2l header --json client_secret.json https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly)"\
+          https://people.googleapis.com/v1/people/me/connections?requestMask.includeField=person.names,person.phone_numbers,person.email_addresses`
       end
     end
-
-    private_constant :Fetcher
   end
 end

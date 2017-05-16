@@ -1,10 +1,10 @@
 require_relative '../spec_helper'
+require_relative '../fixtures/connections.rb'
 
 RSpec.describe Tact::GoogleContacts::Syncer do
-  let(:info) { CONTACT_INFO }
+  let(:info) { CONNECTION }
   let(:entry) { Tact::GoogleContacts::Entry.new(info) }
   let(:syncer) { Tact::GoogleContacts::Syncer.new(entry) }
-
 
   context 'with an existing contact' do
     let!(:contact) do
@@ -19,7 +19,7 @@ RSpec.describe Tact::GoogleContacts::Syncer do
       syncer.sync
       number = contact.phone_numbers.first
       expect(number.number).to eq '(123) 456-7890'
-      expect(number.kind).to eq 'Cell'
+      expect(number.kind).to eq 'Test'
     end
 
     it 'does not add repeat numbers' do
