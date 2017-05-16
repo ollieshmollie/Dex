@@ -13,7 +13,7 @@ module Tact
 
     def format_number
       n = number.gsub(/[^\d]/, "")
-      self.number = n.gsub(/(\d{3})(\d{3})(\d{4})/, '(\1) \2-\3')
+      self.number = n.gsub(/\A\d?(\d{3})(\d{3})(\d{4})\z/, '(\1) \2-\3')
     end
 
   end
