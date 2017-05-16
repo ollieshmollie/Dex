@@ -102,8 +102,9 @@ module Tact
       end
     end
 
+    # TODO: Add specs for find methods
     def find_by_name(param)
-      param = param.split(" ").map {|name| name.capitalize }.join(" ")
+      param = param.split(" ").map {|name| name.upcase }.join(" ")
       search_results = []
       @cards.each {|card| search_results.push(card) if card.contact.full_name.include?(param)}
       search_results
