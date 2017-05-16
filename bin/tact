@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
-require 'tact/tact'
+require 'tact'
 
 Tact::Tact.new(ARGV).run
