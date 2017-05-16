@@ -8,6 +8,3 @@ module Authorizable
     File.exists?(credentials) && !File.zero?(credentials)
   end
 end
-
-
-

@@ -26,4 +26,4 @@ else
   )
 end
 
-require 'tact'
+require 'tact/tact'

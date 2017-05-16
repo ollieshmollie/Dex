@@ -1,4 +1,5 @@
 require 'optparse'
+require_relative 'authorizable.rb'
 
 module Tact
   class Tact
