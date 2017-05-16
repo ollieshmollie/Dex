@@ -4,7 +4,7 @@ module Tact
 
     before_save :format_number
     before_save do
-      self.kind = kind.downcase.capitalize
+      self.kind = kind ? kind.downcase.capitalize : "Cell"
     end
 
     def to_s

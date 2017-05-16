@@ -46,7 +46,7 @@ module Tact
           if !contact.phone_numbers.any? { |n| n.number == number.number }
             new_numbers << number
           end
-        end
+        end if entry.phone_numbers
       end
 
       def get_new_emails(contact)
@@ -54,7 +54,7 @@ module Tact
           if !contact.emails.any? { |e| e.address == email.address }
             new_emails << email
           end
-        end
+        end if entry.emails
       end
 
       private
@@ -83,13 +83,13 @@ module Tact
             kind: num[:label],
             number: num[:$t]
           )
-        end
+        end if info[:"gd$phoneNumber"]
       end
 
       def emails
         info[:"gd$email"].map do |e|
           Email.new(address: e[:address])
-        end
+        end if info[:"gd$email"]
       end
 
       def google_id
