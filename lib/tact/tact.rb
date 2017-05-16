@@ -47,6 +47,7 @@ module Tact
   
         -v                                    Current version
         -h                                    Help
+        -s                                    Sync with Google Contacts
 
         <param>                               Search by name
         -p <param>                            Search by number
