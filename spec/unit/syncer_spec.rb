@@ -24,7 +24,7 @@ RSpec.describe Tact::GoogleContacts::Syncer do
 
     it 'does not add repeat numbers' do
       contact.phone_numbers << Tact::PhoneNumber.new(
-        number: '1234567890',
+        number: '(123) 456-7890',
         kind: 'Cell'
       )
       contact.save

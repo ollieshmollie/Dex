@@ -2,7 +2,7 @@ module Tact
   class PhoneNumber < ActiveRecord::Base
     belongs_to :contact
 
-    before_save :format_number
+    after_initialize :format_number
     before_save do
       self.kind = kind ? kind.downcase.capitalize : "Cell"
     end

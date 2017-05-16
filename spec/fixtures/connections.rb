@@ -23,7 +23,7 @@ CONNECTION =
     :phoneNumbers=>
      [{:metadata=>
         {:primary=>true, :source=>{:type=>"CONTACT", :id=>"57e923a58d58512f"}},
-          :value=>"(123) 456-7890",
+          :value=>"+1 123-456-7890",
           :canonicalForm=>"+1123457890",
           :type=>"Test",
           :formattedType=>"Test"}]

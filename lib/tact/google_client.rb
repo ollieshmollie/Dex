@@ -2,6 +2,78 @@ require 'json'
 
 module Tact
   module GoogleContacts
+
+    class Entry
+      attr_reader :info
+
+      def self.all
+        collection
+      end
+
+      def initialize(info)
+        @info = info
+      end
+
+      def first_name
+        names[:givenName]
+      end
+
+      def last_name
+        names[:familyName]
+      end
+
+      def phone_numbers
+        if info[:phoneNumbers]
+          info[:phoneNumbers].map do |phone_number|
+            PhoneNumber.new(
+              number: phone_number[:value],
+              kind: phone_number[:type]
+            )
+          end
+        end
+      end
+
+      def emails
+        if info[:emailAddresses]
+          info[:emailAddresses].map do |email_address|
+            Email.new(address: email_address[:value])
+          end 
+        end
+      end
+
+      private
+
+        def names
+          info[:names][0]
+        end
+
+      def self.collection
+        @@collection ||= Fetcher.info_list.reduce(EntriesCollection.new) do |collection, info|
+          collection << new(info)
+        end
+      end
+      
+      private_class_method :collection
+    end
+
+
+    class EntriesCollection
+      include Enumerable
+
+      def initialize(entries=[])
+        @entries = entries
+      end
+
+      def <<(entry)
+        @entries << entry
+      end
+
+      def each
+        @entries.each { |c| yield(c) }  
+      end
+    end
+    
+
     class Syncer
 
       def initialize(entry)
@@ -62,75 +134,7 @@ module Tact
 
     end
 
-    class Entry
-      attr_reader :info
-
-      def self.all
-        collection
-      end
-
-      def initialize(info)
-        @info = info
-      end
-
-      def first_name
-        names[:givenName]
-      end
-
-      def last_name
-        names[:familyName]
-      end
-
-      def phone_numbers
-        if info[:phoneNumbers]
-          info[:phoneNumbers].map do |phone_number|
-            PhoneNumber.new(
-              number: phone_number[:value],
-              kind: phone_number[:type]
-            )
-          end
-        end
-      end
-
-      def emails
-        if info[:emailAddresses]
-          info[:emailAddresses].map do |email_address|
-            Email.new(address: email_address[:value])
-          end 
-        end
-      end
-
-      private
-
-        def names
-          info[:names][0]
-        end
-
-      def self.collection
-        @@collection ||= Fetcher.info_list.reduce(EntriesCollection.new) do |collection, info|
-          collection << new(info)
-        end
-      end
-      
-      private_class_method :collection
-    end
-
-    class EntriesCollection
-      include Enumerable
-
-      def initialize(entries=[])
-        @entries = entries
-      end
-
-      def <<(entry)
-        @entries << entry
-      end
-
-      def each
-        @entries.each { |c| yield(c) }  
-      end
-    end
-
+    
     class Fetcher
 
       def self.info_list
@@ -142,5 +146,6 @@ module Tact
           https://people.googleapis.com/v1/people/me/connections?requestMask.includeField=person.names,person.phone_numbers,person.email_addresses`
       end
     end
+
   end
 end

@@ -2,6 +2,8 @@ require 'optparse'
 
 module Tact
   class Tact
+    include Authorizable
+
     def initialize(args)
       @dex = Rolodex.new
       @options = {}
@@ -119,6 +121,7 @@ module Tact
         end
 
       elsif @options[:sync]
+        authorize unless authorized?
         puts "Syncing Google contacts..." 
         GoogleContacts::Entry.all.each do |entry|
           syncer = GoogleContacts::Syncer.new(entry)

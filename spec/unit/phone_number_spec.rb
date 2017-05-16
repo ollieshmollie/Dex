@@ -6,7 +6,7 @@ RSpec.describe Tact::PhoneNumber do
   describe 'attributes' do
 
     it 'has a number' do
-      expect(number.number).to eq '1234567890'
+      expect(number.number).to eq '(123) 456-7890'
     end
 
     it 'has a kind' do
