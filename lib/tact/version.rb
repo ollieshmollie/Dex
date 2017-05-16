@@ -1,3 +1,3 @@
 module Tact
-  VERSION = "2.0"
+  VERSION = "2.0.5"
 end

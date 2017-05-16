@@ -1,4 +1,5 @@
 require 'optparse'
+require 'authorizable'
 
 module Tact
   class Tact
