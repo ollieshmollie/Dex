@@ -2,7 +2,7 @@ require 'bundler/gem_tasks'
 require 'fileutils'
 
 task :environment do
-  require 'tact/environment'
+  require 'tact'
 end
 
 namespace :generate do
@@ -32,9 +32,15 @@ namespace :generate do
   end
 end
 
+task :make_tact_dir do
+  if !File.exists?("#{File.expand_path('~')}/.tact")
+    FileUtils.mkdir("#{File.expand_path('~')}/.tact")
+  end
+end
+
 namespace :db do
   desc "Create databases"
-  task :create => :environment do
+  task :create => [:environment, :make_tact_dir] do
     SQLite3::Database.new(DEV_DB)
     SQLite3::Database.new(TEST_DB)
   end

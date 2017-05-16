@@ -2,8 +2,9 @@ module Tact
   class Contact < ActiveRecord::Base
     has_many :phone_numbers, dependent: :destroy
     has_many :emails, dependent: :destroy
+    validates :last_name, uniqueness: { scope: :first_name }
 
-    before_save do
+    before_validation do
       first_name.upcase!
       last_name.upcase!
     end
