@@ -138,11 +138,16 @@ module Tact
     class Fetcher
 
       def self.info_list
-        JSON.parse(json, symbolize_names: true)[:connections]
+        info = JSON.parse(json, symbolize_names: true)
+        if info[:error]
+          puts "ERROR: Please authorize your Google account.".red 
+          exit
+        end
+        info[:connections]  
       end
 
       def self.json
-        `curl -H "$(oauth2l header --json client_secret.json https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly)"\
+        `curl -H "$(oauth2l header --json #{File.join('client_secret.json')} https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly)"\
           https://people.googleapis.com/v1/people/me/connections?requestMask.includeField=person.names,person.phone_numbers,person.email_addresses`
       end
     end

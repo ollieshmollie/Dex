@@ -44,8 +44,6 @@ SQLite3::Database.new(DEV_DB)
 SQLite3::Database.new(TEST_DB)
 
 # Run migrations
-ActiveRecord::Migrator.migrations_paths << File.dirname(__FILE__) + 'db/migrate'
+ActiveRecord::Migrator.migrations_paths << APP_ROOT + 'db/migrate'
 ActiveRecord::Migration.verbose = false
-ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths, ENV["VERSION"] ? ENV["VERSION"].to_i : nil) do |migration|
-  ENV["SCOPE"].blank? || (ENV["SCOPE"] == migration.scope)
-end
+ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths)

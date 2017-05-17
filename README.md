@@ -11,6 +11,7 @@ A command line rolodex.
 ```     
   -v                                    Current version
   -h                                    Help
+  -s                                    Sync Google contacts
 
   <param>                               Search by name
   -p <param>                            Search by number
@@ -28,7 +29,7 @@ A command line rolodex.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ollieshmollie/tact.
+Bug reports and pull requests are welcome on GitHub at https://github.com/olishmollie/tact.
 
 
 ## License

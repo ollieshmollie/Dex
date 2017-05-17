@@ -82,3 +82,14 @@ task :console do
   sh 'irb -I lib -r tact.rb'
 end
 
+desc "Uninstall local version of gem"
+task :uninstall do
+  sh 'yes | gem uninstall tact'  
+  sh 'rm tact-*' if Dir.glob('tact-*').any?
+end
+
+desc "Build and install local gem version"
+task :build => :uninstall do
+  sh 'gem build tact.gemspec && gem install tact'
+end
+
