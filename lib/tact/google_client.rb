@@ -147,7 +147,7 @@ module Tact
       end
 
       def self.json
-        `curl -H "$(oauth2l header --json #{File.join(APP_ROOT, 'client_secret.json')} https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly)"\
+        `curl -H "$(oauth2l header --json #{CLIENT_SECRET} https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly)"\
           https://people.googleapis.com/v1/people/me/connections?requestMask.includeField=person.names,person.phone_numbers,person.email_addresses`
       end
     end

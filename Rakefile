@@ -85,7 +85,7 @@ end
 desc "Uninstall local version of gem"
 task :uninstall do
   sh 'yes | gem uninstall tact'  
-  sh 'rm tact-*' if Dir.glob('tact-*').any?
+  sh 'rm tact-*' unless Dir.glob('./tact-*').empty?
 end
 
 desc "Build and install local gem version"

@@ -1,6 +1,6 @@
 module Authorizable
   def authorize
-    system('oauth2l fetch --json client_secret.json https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly')
+    system("oauth2l fetch --json #{CLIENT_SECRET} https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly")
   end
 
   def authorized?

@@ -29,4 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.6"
   spec.add_development_dependency "database_cleaner", "~> 1.4"
+
+  spec.requirements << "oauth2l"
+
+  spec.post_install_message = "Thanks for installing tact! Run `tact -h` for help. Note: If you would like to sync your contacts with Google, please install oauth2l: 'https://github.com/google/oauth2l'"
 end

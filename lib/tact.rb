@@ -20,6 +20,7 @@ APP_ROOT ||= File.join(File.dirname(__FILE__), '../')
 DEV_DB ||= File.join(File.expand_path('~'), '.tact', 'tact.sqlite3')
 TEST_DB ||= File.join(File.expand_path('~'), '.tact', 'tact_test.sqlite3')
 MIGRATIONS_DIR ||= 'db/migrate'
+CLIENT_SECRET ||= File.join(APP_ROOT, 'client_secret.json')
 
 # tells AR what db file to use
 if ENV['GEM_ENV'] == 'test'
