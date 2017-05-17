@@ -44,24 +44,24 @@ module Tact
     end
 
     def help_message
-      <<~EOF
-  
-        -v                                    Current version
-        -h                                    Help
-        -s                                    Sync with Google Contacts
+      <<-EOF
 
-        <param>                               Search by name
-        -p <param>                            Search by number
-        -e <param>                            Search by email
-        -n <first> <last>                     Adds new name
-        -np <index> <type> <num>              Adds contact number
-        -ne <index> <address>                 Adds contact email
-        -d <index>                            Deletes contact
-        -dp <index> <num_index>               Deletes contact number
-        -de <index> <e_index>                 Deletes contact email
-        -u <index> <first> <last>             Edits contact name
-        -up <index> <num_index> <type> <num>  Edits contact number
-        -ue <index> <e_index> <address>       Edits contact email
+-v                                    Current version
+-h                                    Help
+-s                                    Sync with Google Contacts
+
+<param>                               Search by name
+-p <param>                            Search by number
+-e <param>                            Search by email
+-n <first> <last>                     Adds new name
+-np <index> <type> <num>              Adds contact number
+-ne <index> <address>                 Adds contact email
+-d <index>                            Deletes contact
+-dp <index> <num_index>               Deletes contact number
+-de <index> <e_index>                 Deletes contact email
+-u <index> <first> <last>             Edits contact name
+-up <index> <num_index> <type> <num>  Edits contact number
+-ue <index> <e_index> <address>       Edits contact email
 
       EOF
     end
