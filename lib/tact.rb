@@ -1,4 +1,5 @@
 # require needed gems
+require 'fileutils'
 require 'active_record'
 require 'sqlite3'
 require 'colored'
@@ -31,4 +32,20 @@ else
     :adapter => 'sqlite3',
     :database => DEV_DB 
   )
+end
+
+# Make tact directory
+if !File.exists?("#{File.expand_path('~')}/.tact")
+  FileUtils.mkdir("#{File.expand_path('~')}/.tact")
+end
+
+# Create database
+SQLite3::Database.new(DEV_DB)
+SQLite3::Database.new(TEST_DB)
+
+# Run migrations
+ActiveRecord::Migrator.migrations_paths << File.dirname(__FILE__) + 'db/migrate'
+ActiveRecord::Migration.verbose = false
+ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths, ENV["VERSION"] ? ENV["VERSION"].to_i : nil) do |migration|
+  ENV["SCOPE"].blank? || (ENV["SCOPE"] == migration.scope)
 end

@@ -1,4 +1,4 @@
-class CreateTables < ActiveRecord::Migration
+class CreateTables < ActiveRecord::Migration[4.2]
   def change
     create_table :contacts do |t|
       t.string :first_name, limit: 20
