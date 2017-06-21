@@ -85,7 +85,7 @@ module Tact
       def sync
         contact = find_contact || Contact.new(
           first_name: entry.first_name.upcase,
-          last_name: entry.last_name.upcase
+          last_name: (entry.last_name || "").upcase
         )
         merge_properties(contact)
         contact.save
