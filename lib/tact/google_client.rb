@@ -94,7 +94,7 @@ module Tact
       def find_contact
         Contact.find_by(
           first_name: entry.first_name.upcase,
-          last_name: entry.last_name.upcase
+          last_name: (entry.last_name || "").upcase
         )
       end
 
